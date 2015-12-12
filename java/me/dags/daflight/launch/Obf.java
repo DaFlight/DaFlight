@@ -38,21 +38,21 @@ public class Obf
         return "L" + get(obf) + ";";
     }
 
-    public static final me.dags.daflight.launch.Obf BOOLEAN = new me.dags.daflight.launch.Obf("Z");
-    public static final me.dags.daflight.launch.Obf DOUBLE = new me.dags.daflight.launch.Obf("D");
-    public static final me.dags.daflight.launch.Obf FLOAT = new me.dags.daflight.launch.Obf("F");
-    public static final me.dags.daflight.launch.Obf INT = new me.dags.daflight.launch.Obf("I");
-    public static final me.dags.daflight.launch.Obf LONG = new me.dags.daflight.launch.Obf("J");
-    public static final me.dags.daflight.launch.Obf VOID = new me.dags.daflight.launch.Obf("V");
+    public static final Obf BOOLEAN = new Obf("Z");
+    public static final Obf DOUBLE = new Obf("D");
+    public static final Obf FLOAT = new Obf("F");
+    public static final Obf INT = new Obf("I");
+    public static final Obf LONG = new Obf("J");
+    public static final Obf VOID = new Obf("V");
 
-    public static final me.dags.daflight.launch.Obf EntityPlayerSP = new me.dags.daflight.launch.Obf("net/minecraft/client/entity/EntityPlayerSP", "bew");
-    public static final me.dags.daflight.launch.Obf Minecraft = new me.dags.daflight.launch.Obf("net/minecraft/client/Minecraft", "ave");
-    public static final me.dags.daflight.launch.Obf NetHandlerPlayClient = new me.dags.daflight.launch.Obf("net/minecraft/client/network/NetHandlerPlayClient", "bcy");
-    public static final me.dags.daflight.launch.Obf PlayerControllerMP = new me.dags.daflight.launch.Obf("net/minecraft/client/multiplayer/PlayerControllerMP","bda");
-    public static final me.dags.daflight.launch.Obf StatFileWriter = new me.dags.daflight.launch.Obf("net/minecraft/stats/StatFileWriter", "nb");
-    public static final me.dags.daflight.launch.Obf World = new me.dags.daflight.launch.Obf("net/minecraft/world/World", "adm");
+    public static final Obf EntityPlayerSP = new Obf("net/minecraft/client/entity/EntityPlayerSP", "bew");
+    public static final Obf Minecraft = new Obf("net/minecraft/client/Minecraft", "ave");
+    public static final Obf NetHandlerPlayClient = new Obf("net/minecraft/client/network/NetHandlerPlayClient", "bcy");
+    public static final Obf PlayerControllerMP = new Obf("net/minecraft/client/multiplayer/PlayerControllerMP","bda");
+    public static final Obf StatFileWriter = new Obf("net/minecraft/stats/StatFileWriter", "nb");
+    public static final Obf World = new Obf("net/minecraft/world/World", "adm");
 
-    public static final me.dags.daflight.launch.Obf getPlayerMethod = new me.dags.daflight.launch.Obf("func_178892_a", "a");
-    public static final me.dags.daflight.launch.Desc getPlayerDesc = new me.dags.daflight.launch.Desc(EntityPlayerSP, World, StatFileWriter);
-    public static final me.dags.daflight.launch.Desc initPlayerDesc = new Desc(VOID, Minecraft, World, NetHandlerPlayClient, StatFileWriter);
+    public static final Obf getPlayerMethod = new Obf("func_178892_a", "a");
+    public static final Desc getPlayerDesc = new Desc(EntityPlayerSP, World, StatFileWriter);
+    public static final Desc initPlayerDesc = new Desc(VOID, Minecraft, World, NetHandlerPlayClient, StatFileWriter);
 }
