@@ -79,10 +79,7 @@ public class DaFlightTransformer implements IClassTransformer
                     node.accept(writer);
                     return writer.toByteArray();
                 }
-                else
-                {
-                    logger.warn("Unable to transform class: " + clazz.get(false) + "!");
-                }
+                logger.warn("Unable to transform class: " + clazz.get(false) + "!");
             }
         }
         return classBytes;

@@ -17,6 +17,7 @@ public class UIToggle extends UIBind
         this.off = off;
     }
 
+    @Override
     public UIToggle left(int left)
     {
         super.left(left);

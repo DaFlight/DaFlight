@@ -30,12 +30,12 @@ public class EntityFlying extends EntityPlayerSP
 
     public Config config;
 
-    private me.dags.daflight.Bind menu;
-    private me.dags.daflight.Bind flyBind;
-    private me.dags.daflight.Bind sprintBind;
-    private me.dags.daflight.Bind boostBind;
-    private me.dags.daflight.Bind flyUpBind;
-    private me.dags.daflight.Bind flyDownBind;
+    private Bind menu;
+    private Bind flyBind;
+    private Bind sprintBind;
+    private Bind boostBind;
+    private Bind flyUpBind;
+    private Bind flyDownBind;
 
     public boolean flying = false;
     public boolean sprinting = false;
