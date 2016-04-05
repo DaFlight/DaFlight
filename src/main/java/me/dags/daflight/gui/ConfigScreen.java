@@ -1,6 +1,6 @@
 package me.dags.daflight.gui;
 
-import me.dags.daflight.EntityFlying;
+import me.dags.daflight.DaFlight;
 import me.dags.daflight.util.Config;
 import me.dags.daflight.util.ConfigGlobal;
 import net.minecraft.client.Minecraft;
@@ -139,7 +139,7 @@ public class ConfigScreen extends GuiScreen
         {
             updateConfig();
             configGlobal.save();
-            ((EntityFlying) Minecraft.getMinecraft().thePlayer).updateConfig();
+            DaFlight.INSTANCE.updateConfig();
             Minecraft.getMinecraft().displayGuiScreen(null);
         }
     }

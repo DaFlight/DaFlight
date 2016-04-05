@@ -14,11 +14,15 @@ hs_err_pid*
 # gradle stuff
 .gradle/
 build/
+run/
+*.launch
 
 # eclipse
 bin/
 .settings/
 .project
 .classpath
+.factorypath
+.apt_generated/
 
 .idea/

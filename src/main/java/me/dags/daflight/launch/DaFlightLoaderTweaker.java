@@ -6,6 +6,9 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
 import java.io.File;
 import java.util.List;
 
+import org.spongepowered.asm.launch.MixinBootstrap;
+import org.spongepowered.asm.mixin.MixinEnvironment;
+
 /**
  * @author dags_ <dags@dags.me>
  */
@@ -20,7 +23,8 @@ public class DaFlightLoaderTweaker implements ITweaker
     @Override
     public void injectIntoClassLoader(LaunchClassLoader launchClassLoader)
     {
-        launchClassLoader.registerTransformer("me.dags.daflight.launch.DaFlightTransformer");
+        MixinBootstrap.init();
+        MixinEnvironment.getDefaultEnvironment().addConfiguration("mixin.daflight.json");
     }
 
     @Override
