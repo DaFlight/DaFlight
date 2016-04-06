@@ -1,72 +1,140 @@
 buildscript {
-	repositories {
-		jcenter()
-		maven {
-			name 'forge'
-			url 'http://files.minecraftforge.net/maven'
-		}
-		maven {
-			name 'm2'
-			url 'https://plugins.gradle.org/m2'
-		}
-		maven {
-			name 'sponge'
-			url 'https://repo.spongepowered.org/maven'
-		}
-	}
-	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+    repositories {
+        jcenter()
+        maven {
+            name 'forge'
+            url 'http://files.minecraftforge.net/maven'
+        }
+        maven {
+            name 'm2'
+            url 'https://plugins.gradle.org/m2'
+        }
+        maven {
+            name 'sponge'
+            url 'https://repo.spongepowered.org/maven'
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
         classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
-		classpath 'gradle.plugin.mnm.mods.kappa:ap-ide:1.0.5'
-	}
+        classpath 'gradle.plugin.mnm.mods.kappa:ap-ide:1.0.5'
+    }
 }
 apply plugin: 'net.minecraftforge.gradle.tweaker-client'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
 minecraft {
-	version = '1.8.9'
-	mappings = 'stable_22'
-	runDir = 'run'
-	tweakClass = 'me.dags.daflight.DaFlightLoaderTweaker'
+    version = '1.8.9'
+    mappings = 'stable_22'
+    runDir = 'run'
+    tweakClass = 'me.dags.daflight.launch.DaFlightTweaker'
 }
 
 group = 'me.dags'
-version = "3.0.2-$minecraft.version"
+version = "3.1r0-mc$minecraft.version"
 
 repositories {
-	maven {
-		name 'sponge'
-		url 'https://repo.spongepowered.org/maven'
-	}
+    maven {
+        name 'sponge'
+        url 'https://repo.spongepowered.org/maven'
+    }
 }
 
 dependencies {
-	compile('org.spongepowered:mixin:0.5.3-SNAPSHOT') {
-		exclude module: 'asm-commons'
-        exclude module: 'asm-tree'
-        exclude module: 'launchwrapper'
-        exclude module: 'guava'
-	}
-	factory 'org.spongepowered:mixin:0.5.3-SNAPSHOT'
+    compile('org.spongepowered:mixin:0.5.3-SNAPSHOT') {
+        transitive = false
+    }
+    factory 'org.spongepowered:mixin:0.5.3-SNAPSHOT'
 }
 processor {
-	options.reobfSrgFile = project.tasks.genSrgs.mcpToSrg.path
+    options.reobfSrgFile = project.tasks.genSrgs.mcpToSrg.path
+}
+sourceSets {
+    main {
+        refMap = 'mixin.daflight.refmap.json'
+    }
 }
 mixin {
-//	add sourceSets.main, 'mixin.daflight.refmap.json'
-	defaultObfuscationEnv notch
+//    add sourceSets.main, 'mixin.daflight.refmap.json'
+    defaultObfuscationEnv notch
 }
+afterEvaluate {
 jar {
-	manifest {
-		attributes  'Built-By': 'ForgeGradle',
-					'Implementation-Vendor': 'dags',
-					'Implementation-Title': project.name,
-					'Implementation-Version': project.version,
-					'TweakClass': 'me.dags.daflight.launch.DaFlightLoaderTweaker',
-					'TweakName': project.name,
-					'TweakVersion': project.version,
-					'TweakAuthor': 'dags'
-			
-	}
+    classifier 'minimal'
+    manifest {
+        attributes  'Built-By': 'ForgeGradle',
+                    'Implementation-Vendor': 'dags',
+                    'Implementation-Title': project.name,
+                    'Implementation-Version': project.version,
+                    'TweakClass': 'me.dags.daflight.launch.DaFlightLoaderTweaker',
+                    'TweakName': project.name,
+                    'TweakVersion': project.version,
+                    'TweakAuthor': 'dags'
+            
+    }
+}
+}
+task allJar(type:Jar){
+
+    from sourceSets.main.output
+    from configurations.compile.collect {zipTree(it)}
+}
+
+artifacts.archives allJar
+reobf{
+    allJar{}
+}
+import net.minecraftforge.gradle.tasks.*
+
+task processJson(type:Copy) {
+
+    def things = [
+        version:project.version,
+        project:project.name,
+        timestamp:new Date().format("yyyy'-'MM'-'dd'T'hh':'mm':'ssZZZZ"),
+        mcversion: project.minecraft.version,
+        artifact:"$project.group:$project.name:$version",
+        universal_jar:project.allJar.archivePath.name,
+        tweak_class:project.minecraft.tweakClass
+    ]
+
+    from('install_profile.json') {
+        filter { line ->
+            def replaces = (line =~ /@(.+?)@/)
+            replaces.each {
+                def key = it[0]
+                def val = things[it[1]] ?: 'null'
+                line = line.replace(it[0], things[it[1]] ?: 'null')
+            }
+            line
+        }
+    }
+    from ('.') {
+        include 'daflight-logo.png'
+        rename {'daflight-installer-logo.png'}
+    }
+    into 'build/distributions/packaging/resources'
+    outputs.upToDateWhen {false}
+}
+task downloadInstaller(type:EtagDownloadTask) {
+    url = 'http://files.minecraftforge.net/maven/net/minecraftforge/installer/1.4/installer-1.4-shrunk.jar'
+    dieWithError = true
+    file = 'build/distributions/packaging/installer-fresh.jar'
+}
+task installer(type:Zip) {
+    from allJar
+    from processJson
+    from (zipTree(downloadInstaller.file)) {
+        exclude '*.json'
+        exclude '*.png'
+    }
+    
+    baseName = project.name
+    classifier = 'installer'
+    extension = 'jar'
+    destinationDir = file('build/distributions')
+    duplicatesStrategy = 'EXCLUDE'
+    outputs.upToDateWhen {false}
+    dependsOn downloadInstaller, build, processJson
 }

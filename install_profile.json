@@ -1,0 +1,36 @@
+{
+  "install":{
+    "profileName":"@project@",
+    "target":"@mcversion@-@project@-@version@",
+    "path":"@artifact@",
+    "version":"@project@ @version@",
+    "filePath":"@universal_jar@",
+    "welcome": "Welcome to the @project@ installer.",
+    "minecraft":"@mcversion@",
+    "mirrorList":"",
+    "logo":"/daflight-installer-logo.png",
+    "hideServer": true
+  },
+  "versionInfo": {
+    "id": "@mcversion@-@project@-@version@",
+    "time": "@timestamp@",
+    "releaseTime": "2015-12-08T21:37:23+01:00",
+    "type": "release",
+    "minecraftArguments": "--username ${auth_player_name} --version ${version_name} --gameDir ${game_directory} --assetsDir ${assets_root} --assetIndex ${assets_index_name} --uuid ${auth_uuid} --accessToken ${auth_access_token} --userProperties ${user_properties} --userType ${user_type} --tweakClass @tweak_class@",
+    "libraries": [
+      {
+        "name": "@artifact@"
+      },
+      {
+        "name": "net.minecraft:launchwrapper:1.12"
+      },
+      {
+        "name": "org.ow2.asm:asm-all:5.0.3"
+      }
+    ],
+    "mainClass":"net.minecraft.launchwrapper.Launch",
+    "minimumLauncherVersion": 16,
+    "inheritsFrom": "@mcversion@",
+    "jar": "@mcversion@"
+  }
+}
