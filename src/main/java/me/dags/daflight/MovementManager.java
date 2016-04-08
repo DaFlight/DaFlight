@@ -1,6 +1,7 @@
 package me.dags.daflight;
 
 import me.dags.daflight.util.Config;
+import me.dags.daflight.util.Tuple3d;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovementInputFromOptions;
@@ -110,20 +111,6 @@ public class MovementManager {
                 super.moveStrafe /= 0.3D;
             }
         }
-    }
-    
-    public static class Tuple3d
-    {
-        public double x;
-        public double y;
-        public double z;
-
-        public Tuple3d(double x, double y, double z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-        
     }
     
     public static float clamp(float in, float max)
