@@ -13,8 +13,8 @@ public class MovementManager {
     private EntityPlayer player;
     private PlayerStatus status;
     
-    private float maxFlySpeed = 1F;
-    private float maxWalkSpeed = 1F;
+    private float maxFlySpeed = 10F;
+    private float maxWalkSpeed = 10F;
     
     private static final double SCALE_FACTOR = 1 / Math.sqrt(2);
     
