@@ -59,26 +59,33 @@ mixin {
 //    add sourceSets.main, 'mixin.daflight.refmap.json'
     defaultObfuscationEnv notch
 }
-afterEvaluate {
+def commonManifest = [
+    'Built-By': 'ForgeGradle',
+    'Implementation-Vendor': 'dags',
+    'Implementation-Title': project.name,
+    'Implementation-Version': project.version,
+    'TweakClass': 'me.dags.daflight.launch.DaFlightLoaderTweaker',
+    'TweakName': project.name,
+    'TweakVersion': project.version,
+    'TweakAuthor': 'dags'
+]
 jar {
     classifier 'minimal'
-    manifest {
-        attributes  'Built-By': 'ForgeGradle',
-                    'Implementation-Vendor': 'dags',
-                    'Implementation-Title': project.name,
-                    'Implementation-Version': project.version,
-                    'TweakClass': 'me.dags.daflight.launch.DaFlightLoaderTweaker',
-                    'TweakName': project.name,
-                    'TweakVersion': project.version,
-                    'TweakAuthor': 'dags'
-            
+    afterEvaluate {
+        manifest {
+            attributes commonManifest
+        }
     }
-}
 }
 task allJar(type:Jar){
 
     from sourceSets.main.output
     from configurations.compile.collect {zipTree(it)}
+	exclude 'META-INF/**'
+
+    manifest {
+        attributes commonManifest
+    }
 }
 
 artifacts.archives allJar
