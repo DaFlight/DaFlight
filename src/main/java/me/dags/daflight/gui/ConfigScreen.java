@@ -1,6 +1,6 @@
 package me.dags.daflight.gui;
 
-import me.dags.daflight.EntityFlying;
+import me.dags.daflight.DaFlight;
 import me.dags.daflight.util.Config;
 import me.dags.daflight.util.ConfigGlobal;
 import net.minecraft.client.Minecraft;
@@ -22,7 +22,7 @@ public class ConfigScreen extends GuiScreen
 {
     private List<UIElement> elements = new ArrayList<UIElement>();
 
-    private Map<String, me.dags.daflight.gui.UISlider> sliders = new LinkedHashMap<String, me.dags.daflight.gui.UISlider>();
+    private Map<String, UISlider> sliders = new LinkedHashMap<String, UISlider>();
     private Map<String, UIBind> binds = new LinkedHashMap<String, UIBind>();
 
     private UIToggle disable;
@@ -37,14 +37,14 @@ public class ConfigScreen extends GuiScreen
     public ConfigScreen(ConfigGlobal configGlobal)
     {
         this.configGlobal = configGlobal;
-        this.config = configGlobal.activeConfig;
+        this.config = configGlobal.getActiveConfig();
     }
 
     private void register(UIElement element)
     {
-        if (element instanceof me.dags.daflight.gui.UISlider)
+        if (element instanceof UISlider)
         {
-            sliders.put(element.getDisplayString(), (me.dags.daflight.gui.UISlider) element);
+            sliders.put(element.getDisplayString(), (UISlider) element);
         }
         if (element instanceof UIBind)
         {
@@ -77,12 +77,12 @@ public class ConfigScreen extends GuiScreen
         elements.add(serverConfigs = new UIToggle(w, 10, "Server Configs: Enabled", "Server Configs: Disabled").set(configGlobal.serverConfigs).left(l));
 
         elements.add(new UILabel(8, 0xFFFFFF).left(l).setDisplay("Tuning"));
-        register(new me.dags.daflight.gui.UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Fly Speed").setValue(config.flySpeed).setDefault(1F));
-        register(new me.dags.daflight.gui.UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Fly Boost").setValue(config.flyBoost).setDefault(2F));
-        register(new me.dags.daflight.gui.UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Sprint Speed").setValue(config.sprintSpeed).setDefault(1F));
-        register(new me.dags.daflight.gui.UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Sprint Boost").setValue(config.sprintBoost).setDefault(2F));
-        register(new me.dags.daflight.gui.UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Jump Modifier").setValue(config.jumpModifier).setDefault(2F));
-        register(new me.dags.daflight.gui.UISlider(w, 10, 2F, 0.0F, 4, 1).left(l).setDisplay("Strafe Modifier").setValue(config.strafeModifier).setDefault(1F));
+        register(new UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Fly Speed").setValue(config.flySpeed).setDefault(1F));
+        register(new UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Fly Boost").setValue(config.flyBoost).setDefault(2F));
+        register(new UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Sprint Speed").setValue(config.sprintSpeed).setDefault(1F));
+        register(new UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Sprint Boost").setValue(config.sprintBoost).setDefault(2F));
+        register(new UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Jump Modifier").setValue(config.jumpModifier).setDefault(2F));
+        register(new UISlider(w, 10, 2F, 0.0F, 4, 1).left(l).setDisplay("Strafe Modifier").setValue(config.strafeModifier).setDefault(1F));
         register(new UISlider(w, 10, 2F, 0.0F, 4, 1).left(l).setDisplay("Ascend Modifier").setValue(config.verticalModifier).setDefault(1F));
 
         int w1 = (w / 3) * 2 - 1;
@@ -139,7 +139,7 @@ public class ConfigScreen extends GuiScreen
         {
             updateConfig();
             configGlobal.save();
-            ((EntityFlying) Minecraft.getMinecraft().thePlayer).updateConfig();
+            DaFlight.instance().updateConfig();
             Minecraft.getMinecraft().displayGuiScreen(null);
         }
     }

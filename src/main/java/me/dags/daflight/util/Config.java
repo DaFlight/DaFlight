@@ -10,7 +10,7 @@ import java.io.File;
 
 public class Config
 {
-    protected transient File saveFile;
+    private transient File saveFile;
 
     public float flySpeed = 1F;
     public float sprintSpeed = 1F;
@@ -38,7 +38,7 @@ public class Config
 
     public void save()
     {
-        if (saveFile != null) me.dags.daflight.util.FileUtil.serialize(this, saveFile);
+        if (saveFile != null) FileUtil.serialize(this, saveFile);
     }
 
     public static Config getOrCreate(File file)

@@ -54,7 +54,8 @@ public class UIToggle extends UIBind
 
     @Override
     public void keyType(char character, int id)
-    {}
+    {
+    }
 
     public boolean boolValue()
     {

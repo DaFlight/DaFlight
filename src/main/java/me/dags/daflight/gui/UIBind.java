@@ -30,35 +30,35 @@ public class UIBind implements UIElement<String>
         this.height = height;
     }
 
-    public me.dags.daflight.gui.UIBind attach(UIToggle toggle)
+    public UIBind attach(UIToggle toggle)
     {
         this.toggle = toggle;
         return this;
     }
 
     @Override
-    public me.dags.daflight.gui.UIBind top(int y)
+    public UIBind top(int y)
     {
         top = y;
         return this;
     }
 
     @Override
-    public me.dags.daflight.gui.UIBind left(int x)
+    public UIBind left(int x)
     {
         left = x;
         return this;
     }
 
     @Override
-    public me.dags.daflight.gui.UIBind setValue(String value)
+    public UIBind setValue(String value)
     {
         this.value = value;
         return this;
     }
 
     @Override
-    public me.dags.daflight.gui.UIBind setDisplay(String display)
+    public UIBind setDisplay(String display)
     {
         this.display = display;
         return this;

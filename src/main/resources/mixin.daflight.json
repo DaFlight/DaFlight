@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.5.3",
+  "package": "me.dags.daflight.mixin",
+  "refmap": "mixin.daflight.refmap.json",
+  "mixins": [
+    "MixinEntityPlayerSP",
+    "MixinEntityRenderer",
+    "MixinMinecraft",
+    "MixinMovementInput",
+    "MixinNetHandlerClient"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
