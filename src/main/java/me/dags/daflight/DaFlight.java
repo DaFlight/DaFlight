@@ -1,129 +1,125 @@
 package me.dags.daflight;
 
-import io.netty.buffer.Unpooled;
 import me.dags.daflight.gui.ConfigScreen;
-import me.dags.daflight.gui.HudOverlay;
+import me.dags.daflight.handler.InputHandler;
+import me.dags.daflight.handler.MessageHandler;
+import me.dags.daflight.handler.MovementHandler;
+import me.dags.daflight.handler.OverlayHandler;
 import me.dags.daflight.util.Config;
 import me.dags.daflight.util.ConfigGlobal;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.C17PacketCustomPayload;
 
-public class DaFlight {
+import java.io.File;
 
-    public static final DaFlight INSTANCE = new DaFlight();
+/**
+ * @author dags <dags@dags.me>
+ */
+public class DaFlight
+{
+    private static DaFlight instance;
 
-    public static final double SCALE_FACTOR = 1 / Math.sqrt(2);
-    public static final String CHANNEL_FLY = "DAFLIGHT-FLY";
-    public static final String CHANNEL_SPRINT = "DAFLIGHT-SPRINT";
-    public static final String CHANNEL_CONNECT = "DAFLIGHT-CONNECT";
-
-    private final Minecraft mc;
+    private final MovementHandler movementHandler;
+    private final MessageHandler messageHandler;
+    private final OverlayHandler overlayHandler;
     private final ConfigGlobal configGlobal;
+    private InputHandler inputHandler;
 
-    public final PlayerStatus status;
-    public final HudOverlay hudOverlay;
-    
-    public Config config;
+    private Config config = new Config();
 
-    public Bind menu;
-    public Bind flyBind;
-    public Bind sprintBind;
-    public Bind boostBind;
-    public Bind flyUpBind;
-    public Bind flyDownBind;
+    private boolean singlePlayer = false;
+    private String serverName = "";
 
-    
-    private DaFlight() {
-        mc = Minecraft.getMinecraft();
-        configGlobal = ConfigGlobal.getOrCreate(mc.mcDataDir);
-        updateConfig();
-        status = new PlayerStatus();
-        hudOverlay = new HudOverlay(Minecraft.getMinecraft().fontRendererObj, status, configGlobal);
-    }
-
-    public void updateConfig() {
-        config = configGlobal.activeConfig;
-        menu = Bind.from("menu", config.menu, false);
-        flyBind = Bind.from("fly", config.fly, config.flyToggle);
-        sprintBind = Bind.from("sprint", config.sprint, config.sprintToggle);
-        boostBind = Bind.from("boost", config.boost, config.boostToggle);
-        flyUpBind = Bind.from("up", config.up, true);
-        flyDownBind = Bind.from("down", config.down, true);
-    }
-
-    public void handleInput()
+    private DaFlight(File configDir)
     {
-        if (!Minecraft.getMinecraft().inGameHasFocus)
-        {
-            return;
-        }
+        movementHandler = new MovementHandler(this);
+        messageHandler = new MessageHandler();
+        overlayHandler = new OverlayHandler();
+        configGlobal = ConfigGlobal.getOrCreate(configDir);
+    }
 
-        boolean wasFlying = status.flying;
-        boolean wasSprinting = status.sprinting;
+    public ConfigGlobal globalConfig()
+    {
+        return configGlobal;
+    }
 
-        if (menu.keyPress())
-        {
-            Minecraft.getMinecraft().displayGuiScreen(new ConfigScreen(configGlobal));
-        }
+    public Config config()
+    {
+        return config;
+    }
 
-        if (flyBind.isToggle())
-        {
-            status.flying = flyBind.keyPress() ? !status.flying && mc.thePlayer.capabilities.allowFlying : status.flying;
-        }
-        else
-        {
-            status.flying = flyBind.keyHeld() && mc.thePlayer.capabilities.allowFlying;
-        }
+    public InputHandler inputHandler()
+    {
+        return inputHandler;
+    }
 
-        if (sprintBind.isToggle())
-        {
-            status.sprinting = sprintBind.keyPress() ? !status.sprinting && mc.thePlayer.capabilities.allowFlying : status.sprinting;
-        }
-        else
-        {
-            status.sprinting = sprintBind.keyHeld() && mc.thePlayer.capabilities.allowFlying;
-        }
+    public MessageHandler messageHandler()
+    {
+        return messageHandler;
+    }
 
-        if (boostBind.isToggle())
-        {
-            if (boostBind.keyPress())
-            {
-                status.flyBoosting = status.flying ? !status.flyBoosting : status.flyBoosting;
-                status.sprintBoosting = !status.flying && status.sprinting ? !status.sprintBoosting : status.sprintBoosting;
-            }
-        }
-        else
-        {
-            status.flyBoosting = status.flying ? boostBind.keyHeld() : status.flyBoosting;
-            status.sprintBoosting = !status.flying && status.sprinting ? boostBind.keyHeld() : status.sprintBoosting;
-        }
+    public OverlayHandler overlayHandler()
+    {
+        return overlayHandler;
+    }
 
-        if (config.disabled || !mc.thePlayer.capabilities.allowFlying)
-        {
-            boolean updated = status.flying || status.sprinting;
-            status.flying = false;
-            status.sprinting = false;
-            status.flyBoosting = false;
-            status.sprintBoosting = false;
-            if (updated)
-            {
-                mc.thePlayer.sendPlayerAbilities();
-            }
-        }
+    public MovementHandler movementHandler()
+    {
+        return movementHandler;
+    }
 
-        if (wasFlying != status.flying)
+    public boolean isSinglePlayer()
+    {
+        return singlePlayer;
+    }
+
+    public String getServerName()
+    {
+        return serverName;
+    }
+
+    public void tick(boolean inGame, boolean inGameHasFocus)
+    {
+        overlayHandler.setInGameHasFocus(inGameHasFocus);
+
+        if (inGame)
         {
-            mc.thePlayer.capabilities.isFlying = status.flying;
-            mc.thePlayer.sendPlayerAbilities();
-            byte val = status.flying ? (byte) 1 : (byte) 0;
-            mc.thePlayer.sendQueue.addToSendQueue(new C17PacketCustomPayload(CHANNEL_FLY, new PacketBuffer(Unpooled.wrappedBuffer(new byte[]{val}))));
-        }
-        if (wasSprinting != status.sprinting)
-        {
-            byte val = status.sprinting ? (byte) 1 : (byte) 0;
-            mc.thePlayer.sendQueue.addToSendQueue(new C17PacketCustomPayload(CHANNEL_SPRINT, new PacketBuffer(Unpooled.wrappedBuffer(new byte[]{val}))));
+            inputHandler().handleMenuInput();
+            inputHandler().handleInput();
+            movementHandler().setInGameHasFocus(inGameHasFocus);
         }
     }
 
+    public void setSinglePlayer(boolean singlePlayer)
+    {
+        this.singlePlayer = singlePlayer;
+    }
+
+    public void setServerName(String serverName)
+    {
+        this.serverName = serverName;
+    }
+
+    public void updateConfig()
+    {
+        config = configGlobal.getActiveConfig();
+        inputHandler = new InputHandler(config, movementHandler);
+    }
+
+    public void displayConfig()
+    {
+        Minecraft.getMinecraft().displayGuiScreen(new ConfigScreen(configGlobal));
+    }
+
+    public static DaFlight instance()
+    {
+        return instance;
+    }
+
+    public static void init(File mcDataDir)
+    {
+        if (instance == null)
+        {
+            instance = new DaFlight(mcDataDir);
+        }
+    }
 }

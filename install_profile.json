@@ -1,7 +1,7 @@
 {
   "install":{
-    "profileName":"@project@",
-    "target":"@mcversion@-@project@-@version@",
+    "profileName":"@project@-@version@",
+    "target":"@project@-@version@",
     "path":"@artifact@",
     "version":"@project@ @version@",
     "filePath":"@universal_jar@",
@@ -12,7 +12,7 @@
     "hideServer": true
   },
   "versionInfo": {
-    "id": "@mcversion@-@project@-@version@",
+    "id": "@project@-@version@",
     "time": "@timestamp@",
     "releaseTime": "2015-12-08T21:37:23+01:00",
     "type": "release",

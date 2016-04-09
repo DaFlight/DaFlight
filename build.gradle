@@ -60,14 +60,14 @@ mixin {
     defaultObfuscationEnv notch
 }
 def commonManifest = [
-    'Built-By': 'ForgeGradle',
-    'Implementation-Vendor': 'dags',
-    'Implementation-Title': project.name,
-    'Implementation-Version': project.version,
-    'TweakClass': 'me.dags.daflight.launch.DaFlightLoaderTweaker',
-    'TweakName': project.name,
-    'TweakVersion': project.version,
-    'TweakAuthor': 'dags'
+        'Built-By'              : 'ForgeGradle',
+        'Implementation-Vendor' : 'dags',
+        'Implementation-Title'  : project.name,
+        'Implementation-Version': project.version,
+        'TweakClass'            : 'me.dags.daflight.launch.DaFlightLoaderTweaker',
+        'TweakName'             : project.name,
+        'TweakVersion'          : project.version,
+        'TweakAuthor'           : 'dags'
 ]
 jar {
     classifier 'minimal'
@@ -77,11 +77,11 @@ jar {
         }
     }
 }
-task allJar(type:Jar){
+task allJar(type: Jar) {
 
     from sourceSets.main.output
-    from configurations.compile.collect {zipTree(it)}
-	exclude 'META-INF/**'
+    from configurations.compile.collect { zipTree(it) }
+    exclude 'META-INF/**'
 
     manifest {
         attributes commonManifest
@@ -89,21 +89,22 @@ task allJar(type:Jar){
 }
 
 artifacts.archives allJar
-reobf{
-    allJar{}
+reobf {
+    allJar {}
 }
-import net.minecraftforge.gradle.tasks.*
 
-task processJson(type:Copy) {
+import net.minecraftforge.gradle.tasks.EtagDownloadTask
+
+task processJson(type: Copy) {
 
     def things = [
-        version:project.version,
-        project:project.name,
-        timestamp:new Date().format("yyyy'-'MM'-'dd'T'hh':'mm':'ssZZZZ"),
-        mcversion: project.minecraft.version,
-        artifact:"$project.group:$project.name:$version",
-        universal_jar:project.allJar.archivePath.name,
-        tweak_class:project.minecraft.tweakClass
+            version      : project.version,
+            project      : project.name,
+            timestamp    : new Date().format("yyyy'-'MM'-'dd'T'hh':'mm':'ssZZZZ"),
+            mcversion    : project.minecraft.version,
+            artifact     : "$project.group:$project.name:$version",
+            universal_jar: project.allJar.archivePath.name,
+            tweak_class  : project.minecraft.tweakClass
     ]
 
     from('install_profile.json') {
@@ -117,31 +118,31 @@ task processJson(type:Copy) {
             line
         }
     }
-    from ('.') {
+    from('.') {
         include 'daflight-logo.png'
-        rename {'daflight-installer-logo.png'}
+        rename { 'daflight-installer-logo.png' }
     }
     into 'build/distributions/packaging/resources'
-    outputs.upToDateWhen {false}
+    outputs.upToDateWhen { false }
 }
-task downloadInstaller(type:EtagDownloadTask) {
+task downloadInstaller(type: EtagDownloadTask) {
     url = 'http://files.minecraftforge.net/maven/net/minecraftforge/installer/1.4/installer-1.4-shrunk.jar'
     dieWithError = true
     file = 'build/distributions/packaging/installer-fresh.jar'
 }
-task installer(type:Zip) {
+task installer(type: Zip) {
     from allJar
     from processJson
-    from (zipTree(downloadInstaller.file)) {
+    from(zipTree(downloadInstaller.file)) {
         exclude '*.json'
         exclude '*.png'
     }
-    
+
     baseName = project.name
     classifier = 'installer'
     extension = 'jar'
     destinationDir = file('build/distributions')
     duplicatesStrategy = 'EXCLUDE'
-    outputs.upToDateWhen {false}
+    outputs.upToDateWhen { false }
     dependsOn downloadInstaller, build, processJson
 }

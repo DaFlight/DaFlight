@@ -1,7 +1,7 @@
 package me.dags.daflight.util;
 
 import com.google.common.base.Optional;
-import net.minecraft.client.Minecraft;
+import me.dags.daflight.DaFlight;
 
 import java.io.File;
 
@@ -13,7 +13,7 @@ public class ConfigGlobal
 {
     private transient File saveFile;
     private transient File daflightDir;
-    public transient Config activeConfig;
+    private transient Config activeConfig;
 
     public boolean serverConfigs = false;
     public String flyDisplay = "fly";
@@ -22,13 +22,31 @@ public class ConfigGlobal
 
     private Config globalConfig = new Config();
 
-    public void save()
+    public Config getActiveConfig()
     {
-        if (serverConfigs && !Minecraft.getMinecraft().isSingleplayer())
+        if (serverConfigs && !DaFlight.instance().isSinglePlayer())
         {
             if (activeConfig == null || activeConfig == globalConfig)
             {
-                String loc = Minecraft.getMinecraft().getCurrentServerData().serverIP.replace(":", "-").replace("-25565", "");
+                String loc = DaFlight.instance().getServerName();
+                activeConfig = Config.getOrCreate(new File(daflightDir, loc + ".json"));
+            }
+            activeConfig.save();
+        }
+        else
+        {
+            activeConfig = globalConfig;
+        }
+        return activeConfig;
+    }
+
+    public void save()
+    {
+        if (serverConfigs && !DaFlight.instance().isSinglePlayer())
+        {
+            if (activeConfig == null || activeConfig == globalConfig)
+            {
+                String loc = DaFlight.instance().getServerName();
                 activeConfig = Config.getOrCreate(new File(daflightDir, loc + ".json"));
             }
             activeConfig.save();
@@ -44,10 +62,13 @@ public class ConfigGlobal
     {
         File globalFile = new File(folder, "daflight_global.json");
         Optional<ConfigGlobal> optional = FileUtil.deserialize(globalFile, ConfigGlobal.class);
-        ConfigGlobal configGlobal = optional.isPresent() ? optional.get() : new ConfigGlobal();
+        ConfigGlobal configGlobal = optional.or(new ConfigGlobal());
         configGlobal.saveFile = globalFile;
-        configGlobal.daflightDir = FileUtil.createFolder(folder, "mods", "daflight");
-        configGlobal.save();
+        configGlobal.daflightDir = FileUtil.createFolder(folder, "config", "daflight");
+        if (!optional.isPresent())
+        {
+            FileUtil.serialize(configGlobal, configGlobal.saveFile);
+        }
         return configGlobal;
     }
 }

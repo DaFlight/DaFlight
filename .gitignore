@@ -13,8 +13,10 @@ hs_err_pid*
 
 # gradle stuff
 .gradle/
+gradle/
 build/
 run/
+gradlew
 *.launch
 
 # eclipse
@@ -24,5 +26,6 @@ bin/
 .classpath
 .factorypath
 .apt_generated/
-
 .idea/
+DaFlightManager/
+*.bat

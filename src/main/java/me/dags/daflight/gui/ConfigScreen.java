@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class ConfigScreen extends GuiScreen
 {
-    private List<UIElement<?>> elements = new ArrayList<UIElement<?>>();
+    private List<UIElement> elements = new ArrayList<UIElement>();
 
     private Map<String, UISlider> sliders = new LinkedHashMap<String, UISlider>();
     private Map<String, UIBind> binds = new LinkedHashMap<String, UIBind>();
@@ -37,10 +37,10 @@ public class ConfigScreen extends GuiScreen
     public ConfigScreen(ConfigGlobal configGlobal)
     {
         this.configGlobal = configGlobal;
-        this.config = configGlobal.activeConfig;
+        this.config = configGlobal.getActiveConfig();
     }
 
-    private void register(UIElement<?> element)
+    private void register(UIElement element)
     {
         if (element instanceof UISlider)
         {
@@ -101,7 +101,7 @@ public class ConfigScreen extends GuiScreen
     {
         drawDefaultBackground();
         int top = 5;
-        for (UIElement<?> s : elements)
+        for (UIElement s : elements)
         {
             s.top(top).draw(mouseX, mouseY);
             top += s.getHeight() + 2;
@@ -111,7 +111,7 @@ public class ConfigScreen extends GuiScreen
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
-        for (UIElement<?> s : elements)
+        for (UIElement s : elements)
         {
             s.mouseClick(mouseX, mouseY, mouseButton);
         }
@@ -120,7 +120,7 @@ public class ConfigScreen extends GuiScreen
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
-        for (UIElement<?> s : elements)
+        for (UIElement s : elements)
         {
             s.mouseRelease();
         }
@@ -130,7 +130,7 @@ public class ConfigScreen extends GuiScreen
     public void keyTyped(char typedChar, int keyCode) throws IOException
     {
         boolean activeAndEsc = false;
-        for (UIElement<?> e : elements)
+        for (UIElement e : elements)
         {
             activeAndEsc = activeAndEsc || e.active() && keyCode == Keyboard.KEY_ESCAPE;
             e.keyType(typedChar, keyCode);
@@ -139,7 +139,7 @@ public class ConfigScreen extends GuiScreen
         {
             updateConfig();
             configGlobal.save();
-            DaFlight.INSTANCE.updateConfig();
+            DaFlight.instance().updateConfig();
             Minecraft.getMinecraft().displayGuiScreen(null);
         }
     }

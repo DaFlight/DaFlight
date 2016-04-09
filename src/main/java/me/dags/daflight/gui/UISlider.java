@@ -75,7 +75,7 @@ public class UISlider implements UIElement<Float>
     }
 
     @Override
-    public UIElement<Float> setDefault(Float value)
+    public UIElement setDefault(Float value)
     {
         defaultVal = value;
         return this;

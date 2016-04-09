@@ -17,7 +17,6 @@ public class UIToggle extends UIBind
         this.off = off;
     }
 
-    @Override
     public UIToggle left(int left)
     {
         super.left(left);
@@ -55,7 +54,8 @@ public class UIToggle extends UIBind
 
     @Override
     public void keyType(char character, int id)
-    {}
+    {
+    }
 
     public boolean boolValue()
     {

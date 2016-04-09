@@ -65,7 +65,7 @@ public class UIBind implements UIElement<String>
     }
 
     @Override
-    public UIElement<String> setDefault(String value)
+    public UIElement setDefault(String value)
     {
         defaultVal = value;
         return this;
