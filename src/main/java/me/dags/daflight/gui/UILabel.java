@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
  * @author dags_ <dags@dags.me>
  */
 
-public class UILabel implements me.dags.daflight.gui.UIElement
+public class UILabel implements UIElement<String>
 {
     private final int height;
     private final int color;
@@ -22,34 +22,34 @@ public class UILabel implements me.dags.daflight.gui.UIElement
     }
 
     @Override
-    public me.dags.daflight.gui.UIElement top(int y)
+    public UIElement<String> top(int y)
     {
         top = y;
         return this;
     }
 
     @Override
-    public me.dags.daflight.gui.UIElement left(int x)
+    public UIElement<String> left(int x)
     {
         left = x;
         return this;
     }
 
     @Override
-    public me.dags.daflight.gui.UIElement setValue(Object value)
+    public UIElement<String> setValue(String value)
     {
         return this;
     }
 
     @Override
-    public me.dags.daflight.gui.UIElement setDisplay(String display)
+    public UIElement<String> setDisplay(String display)
     {
         labal = display;
         return this;
     }
 
     @Override
-    public UIElement setDefault(Object value)
+    public UIElement<String> setDefault(String value)
     {
         return this;
     }
@@ -97,7 +97,7 @@ public class UILabel implements me.dags.daflight.gui.UIElement
     }
 
     @Override
-    public Object get()
+    public String get()
     {
         return null;
     }

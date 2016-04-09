@@ -10,15 +10,15 @@ public interface UIElement<T>
     public static final int TEXT_COLOR = 0xFFFFFFFF;
     public static final int ACTIVE_COLOR = 0xFFFFFFB3;
 
-    public me.dags.daflight.gui.UIElement top(int y);
+    public UIElement<T> top(int y);
 
-    public me.dags.daflight.gui.UIElement left(int x);
+    public UIElement<T> left(int x);
 
-    public me.dags.daflight.gui.UIElement setValue(T value);
+    public UIElement<T> setValue(T value);
 
-    public me.dags.daflight.gui.UIElement setDisplay(String display);
+    public UIElement<T> setDisplay(String display);
 
-    public me.dags.daflight.gui.UIElement setDefault(T value);
+    public UIElement<T> setDefault(T value);
 
     public String getDisplayString();
 

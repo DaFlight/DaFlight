@@ -13,14 +13,14 @@ public class ConfigGlobal
 {
     private transient File saveFile;
     private transient File daflightDir;
-    public transient me.dags.daflight.util.Config activeConfig;
+    public transient Config activeConfig;
 
     public boolean serverConfigs = false;
     public String flyDisplay = "fly";
     public String sprintDisplay = "sprint";
     public String boostDisplay = "+";
 
-    private Config globalConfig = new me.dags.daflight.util.Config();
+    private Config globalConfig = new Config();
 
     public void save()
     {
@@ -40,7 +40,7 @@ public class ConfigGlobal
         FileUtil.serialize(this, saveFile);
     }
 
-    public static me.dags.daflight.util.ConfigGlobal getOrCreate(File folder)
+    public static ConfigGlobal getOrCreate(File folder)
     {
         File globalFile = new File(folder, "daflight_global.json");
         Optional<ConfigGlobal> optional = FileUtil.deserialize(globalFile, ConfigGlobal.class);

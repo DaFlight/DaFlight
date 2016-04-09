@@ -44,7 +44,7 @@ public class UISlider implements UIElement<Float>
     }
 
     @Override
-    public me.dags.daflight.gui.UISlider left(int left)
+    public UISlider left(int left)
     {
         this.left = left;
         this.middle = left + (width / 2);
@@ -52,14 +52,14 @@ public class UISlider implements UIElement<Float>
     }
 
     @Override
-    public me.dags.daflight.gui.UISlider top(int top)
+    public UISlider top(int top)
     {
         this.top = top;
         return this;
     }
 
     @Override
-    public me.dags.daflight.gui.UISlider setValue(Float n)
+    public UISlider setValue(Float n)
     {
         float perc = percFromVal(n);
         int relPos = (int) (width * perc);
@@ -68,14 +68,14 @@ public class UISlider implements UIElement<Float>
     }
 
     @Override
-    public me.dags.daflight.gui.UISlider setDisplay(String s)
+    public UISlider setDisplay(String s)
     {
         displayString = s;
         return this;
     }
 
     @Override
-    public UIElement setDefault(Float value)
+    public UIElement<Float> setDefault(Float value)
     {
         defaultVal = value;
         return this;
