@@ -22,6 +22,11 @@ public class ConfigGlobal
 
     private Config globalConfig = new Config();
 
+    public Config getGlobalConfig()
+    {
+        return globalConfig;
+    }
+
     public Config getActiveConfig()
     {
         if (serverConfigs && !DaFlight.instance().isSinglePlayer())
@@ -58,13 +63,13 @@ public class ConfigGlobal
         FileUtil.serialize(this, saveFile);
     }
 
-    public static ConfigGlobal getOrCreate(File folder)
+    public static ConfigGlobal getOrCreate(File configDir)
     {
-        File globalFile = new File(folder, "daflight_global.json");
+        File globalFile = new File(configDir, "daflight-global.json");
         Optional<ConfigGlobal> optional = FileUtil.deserialize(globalFile, ConfigGlobal.class);
         ConfigGlobal configGlobal = optional.or(new ConfigGlobal());
         configGlobal.saveFile = globalFile;
-        configGlobal.daflightDir = FileUtil.createFolder(folder, "config", "daflight");
+        configGlobal.daflightDir = FileUtil.createFolder(configDir, "daflight-servers");
         if (!optional.isPresent())
         {
             FileUtil.serialize(configGlobal, configGlobal.saveFile);

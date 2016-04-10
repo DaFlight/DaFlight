@@ -30,6 +30,8 @@ public abstract class MixinEntityRenderer
     @Inject(method = "updateCameraAndRender", at = @At("RETURN"))
     public void onUpdateCameraAndRender(float partialTicks, long nanoTime, CallbackInfo callbackInfo)
     {
+        Minecraft.getMinecraft().mcProfiler.startSection("daflightOverlay");
         DaFlight.instance().overlayHandler().renderGameOverlay();
+        Minecraft.getMinecraft().mcProfiler.endSection();
     }
 }

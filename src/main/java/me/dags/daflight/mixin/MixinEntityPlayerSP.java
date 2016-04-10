@@ -34,19 +34,18 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer
         DaFlight.init(Minecraft.getMinecraft().mcDataDir);
     }
 
-    @Inject(method = "onUpdate()V", at = @At("HEAD"))
-    public void onUpdate(CallbackInfo ci)
-    {
-        DaFlight.instance().tick(true, Minecraft.getMinecraft().inGameHasFocus);
-    }
-
     @Override
     public void moveEntity(double x, double y, double z)
     {
+        Minecraft.getMinecraft().mcProfiler.startSection("daflightMove");
+
         direction.update(x, y, z);
         rotation.update(rotationPitch, rotationYaw);
         DaFlight.instance().movementHandler().setMovement(movementInput.moveForward, movementInput.moveStrafe);
         DaFlight.instance().movementHandler().applyMovement(direction, rotation);
+
+        Minecraft.getMinecraft().mcProfiler.endSection();
+
         super.moveEntity(direction.getX(), direction.getY(), direction.getZ());
     }
 

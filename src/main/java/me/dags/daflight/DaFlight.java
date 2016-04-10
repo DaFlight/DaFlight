@@ -7,6 +7,7 @@ import me.dags.daflight.handler.MovementHandler;
 import me.dags.daflight.handler.OverlayHandler;
 import me.dags.daflight.util.Config;
 import me.dags.daflight.util.ConfigGlobal;
+import me.dags.daflight.util.FileUtil;
 import net.minecraft.client.Minecraft;
 
 import java.io.File;
@@ -22,19 +23,21 @@ public class DaFlight
     private final MessageHandler messageHandler;
     private final OverlayHandler overlayHandler;
     private final ConfigGlobal configGlobal;
-    private InputHandler inputHandler;
 
+    private InputHandler inputHandler;
     private Config config = new Config();
 
     private boolean singlePlayer = false;
     private String serverName = "";
 
-    private DaFlight(File configDir)
+    private DaFlight(File mcDir)
     {
+        File configDir = FileUtil.createFolder(mcDir, "config");
         movementHandler = new MovementHandler(this);
         messageHandler = new MessageHandler();
         overlayHandler = new OverlayHandler();
         configGlobal = ConfigGlobal.getOrCreate(configDir);
+        inputHandler = new InputHandler(configGlobal.getGlobalConfig(), movementHandler);
     }
 
     public ConfigGlobal globalConfig()
@@ -81,9 +84,10 @@ public class DaFlight
     {
         overlayHandler.setInGameHasFocus(inGameHasFocus);
 
+        inputHandler().handleMenuInput();
+
         if (inGame)
         {
-            inputHandler().handleMenuInput();
             inputHandler().handleInput();
             movementHandler().setInGameHasFocus(inGameHasFocus);
         }
