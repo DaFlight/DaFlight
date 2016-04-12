@@ -18,8 +18,6 @@ public class MovementHandler
     private float maxFlySpeed = 10F;
     private float maxWalkSpeed = 10F;
 
-    private boolean inGameHasFocus = true;
-
     boolean flying = false;
     boolean sprinting = false;
     boolean flyBoosting = false;
@@ -88,11 +86,6 @@ public class MovementHandler
         this.moveStrafe = moveStrafe;
     }
 
-    public void setInGameHasFocus(boolean inGameHasFocus)
-    {
-        this.inGameHasFocus = inGameHasFocus;
-    }
-
     boolean flyBoosting()
     {
         return flyBoosting;
@@ -142,11 +135,11 @@ public class MovementHandler
         {
             y += -rotation.getPitch() * moveForward * (0.9F / 50F) * daFlight.config().verticalModifier * clamp(daFlight.config().flySpeed * boost, maxFlySpeed);
         }
-        if (DaFlight.instance().inputHandler().getFlyUpBind().keyHeld() && inGameHasFocus)
+        if (DaFlight.instance().inputHandler().getFlyUpBind().keyHeld() && DaFlight.instance().inGameHasFocus())
         {
             y += clamp(daFlight.config().flySpeed * boost * daFlight.config().verticalModifier, maxFlySpeed);
         }
-        if (DaFlight.instance().inputHandler().getFlyDownBind().keyHeld() && inGameHasFocus)
+        if (DaFlight.instance().inputHandler().getFlyDownBind().keyHeld() && DaFlight.instance().inGameHasFocus())
         {
             y -= clamp(daFlight.config().flySpeed * boost * daFlight.config().verticalModifier, maxFlySpeed);
         }

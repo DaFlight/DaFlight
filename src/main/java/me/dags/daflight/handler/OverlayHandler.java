@@ -10,17 +10,10 @@ import net.minecraft.client.Minecraft;
  */
 public class OverlayHandler
 {
-    private boolean inGameHasFocus = false;
-
-    public void setInGameHasFocus(boolean inGameHasFocus)
-    {
-        this.inGameHasFocus = inGameHasFocus;
-    }
-
     public void renderGameOverlay()
     {
         Config config = DaFlight.instance().config();
-        if (config.hud && inGameHasFocus && !Minecraft.getMinecraft().gameSettings.showDebugInfo)
+        if (config.hud && DaFlight.instance().inGameHasFocus() && !Minecraft.getMinecraft().gameSettings.showDebugInfo)
         {
             ConfigGlobal global = DaFlight.instance().globalConfig();
             MovementHandler handler = DaFlight.instance().movementHandler();

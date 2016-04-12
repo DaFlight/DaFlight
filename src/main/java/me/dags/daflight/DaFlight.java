@@ -28,6 +28,7 @@ public class DaFlight
     private Config config = new Config();
 
     private boolean singlePlayer = false;
+    private boolean inGameHasFocus = false;
     private String serverName = "";
 
     private DaFlight(File mcDir)
@@ -75,21 +76,23 @@ public class DaFlight
         return singlePlayer;
     }
 
+    public boolean inGameHasFocus()
+    {
+        return inGameHasFocus;
+    }
+
     public String getServerName()
     {
         return serverName;
     }
 
-    public void tick(boolean inGame, boolean inGameHasFocus)
+    public void tick(boolean inGame, boolean inGameFocus)
     {
-        overlayHandler.setInGameHasFocus(inGameHasFocus);
-
+        inGameHasFocus = inGameFocus;
         inputHandler().handleMenuInput();
-
-        if (inGame)
+        if (inGame && inGameHasFocus)
         {
             inputHandler().handleInput();
-            movementHandler().setInGameHasFocus(inGameHasFocus);
         }
     }
 
