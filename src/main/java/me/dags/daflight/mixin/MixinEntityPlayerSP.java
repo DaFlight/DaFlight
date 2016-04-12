@@ -10,7 +10,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.MovementInput;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
 /**
  * @author dags_ <dags@dags.me>
@@ -19,9 +18,6 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(EntityPlayerSP.class)
 public abstract class MixinEntityPlayerSP extends AbstractClientPlayer
 {
-    @Shadow
-    public MovementInput movementInput;
-
     private final Vector3d direction = new Vector3d();
     private final Rotation rotation = new Rotation();
 
@@ -37,6 +33,7 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer
         updateFlyStatus();
         direction.update(x, y, z);
         rotation.update(rotationPitch, rotationYaw);
+        MovementInput movementInput = Minecraft.getMinecraft().thePlayer.movementInput;
         DaFlight.instance().movementHandler().setMovementInput(movementInput.moveForward, movementInput.moveStrafe);
         DaFlight.instance().movementHandler().applyMovement(direction, rotation);
         Minecraft.getMinecraft().mcProfiler.endSection();

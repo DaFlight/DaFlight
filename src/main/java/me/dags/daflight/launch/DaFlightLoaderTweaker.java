@@ -1,6 +1,8 @@
 package me.dags.daflight.launch;
 
+import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.ITweaker;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
@@ -24,6 +26,10 @@ public class DaFlightLoaderTweaker implements ITweaker
     {
         MixinBootstrap.init();
         MixinEnvironment.getDefaultEnvironment().addConfiguration("mixin.daflight.json");
+        if (fmlIsPresent())
+        {
+            MixinEnvironment.getDefaultEnvironment().setObfuscationContext("searge");
+        }
     }
 
     @Override
@@ -36,5 +42,17 @@ public class DaFlightLoaderTweaker implements ITweaker
     public String[] getLaunchArguments()
     {
         return new String[0];
+    }
+
+    private static boolean fmlIsPresent()
+    {
+        for (IClassTransformer transformer : Launch.classLoader.getTransformers())
+        {
+            if (transformer.getClass().getName().contains("fml"))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,7 +1,6 @@
 package me.dags.daflight.mixin;
 
 import me.dags.daflight.DaFlight;
-import me.dags.daflight.handler.MessageHandler;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import org.spongepowered.asm.mixin.Mixin;
