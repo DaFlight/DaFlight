@@ -30,19 +30,16 @@ public class MovementHandler
         this.daFlight = daFlight;
     }
 
-    public Vector3d applyMovement(Vector3d direction, Rotation rotation)
+    public void applyMovement(Vector3d direction, Rotation rotation)
     {
         if (flying && !DaFlight.instance().config().disabled)
         {
             moveFlying(direction, rotation);
-            return direction;
         }
         else if (sprinting && !daFlight.config().disabled)
         {
             moveSprinting(direction, rotation);
-            return direction;
         }
-        return direction;
     }
 
     public void reset()
@@ -65,16 +62,6 @@ public class MovementHandler
         return sprinting;
     }
 
-    public boolean flyBoosting()
-    {
-        return flyBoosting;
-    }
-
-    public boolean sprintBoosting()
-    {
-        return sprintBoosting;
-    }
-
     public boolean disableFov()
     {
         return DaFlight.instance().config().disableFov && flying;
@@ -95,7 +82,7 @@ public class MovementHandler
         return normal;
     }
 
-    public void setMovement(float moveForward, float moveStrafe)
+    public void setMovementInput(float moveForward, float moveStrafe)
     {
         this.moveForward = moveForward;
         this.moveStrafe = moveStrafe;
@@ -104,6 +91,16 @@ public class MovementHandler
     public void setInGameHasFocus(boolean inGameHasFocus)
     {
         this.inGameHasFocus = inGameHasFocus;
+    }
+
+    boolean flyBoosting()
+    {
+        return flyBoosting;
+    }
+
+    boolean sprintBoosting()
+    {
+        return sprintBoosting;
     }
 
     void setMaxFlySpeed(float maxFlySpeed)

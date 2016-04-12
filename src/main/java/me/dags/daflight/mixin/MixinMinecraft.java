@@ -37,6 +37,8 @@ public abstract class MixinMinecraft
     @Inject(method = "runTick()V", at = @At("RETURN"))
     public void endRunTick(CallbackInfo callbackInfo)
     {
+        Minecraft.getMinecraft().mcProfiler.startSection("daFlightTick");
         DaFlight.instance().tick(thePlayer != null, inGameHasFocus);
+        Minecraft.getMinecraft().mcProfiler.endSection();
     }
 }
