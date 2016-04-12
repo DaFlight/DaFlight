@@ -9,8 +9,5 @@
     "MixinMinecraft",
     "MixinMovementInput",
     "MixinNetHandlerClient"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+  ]
 }

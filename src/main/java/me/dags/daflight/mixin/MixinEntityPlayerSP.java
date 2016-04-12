@@ -11,9 +11,6 @@ import net.minecraft.util.MovementInput;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * @author dags_ <dags@dags.me>
@@ -31,21 +28,18 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer
     public MixinEntityPlayerSP(World worldIn, GameProfile playerProfile)
     {
         super(worldIn, playerProfile);
-        DaFlight.init(Minecraft.getMinecraft().mcDataDir);
     }
 
     @Override
     public void moveEntity(double x, double y, double z)
     {
         Minecraft.getMinecraft().mcProfiler.startSection("daflightMove");
-
+        updateFlyStatus();
         direction.update(x, y, z);
         rotation.update(rotationPitch, rotationYaw);
-        DaFlight.instance().movementHandler().setMovement(movementInput.moveForward, movementInput.moveStrafe);
+        DaFlight.instance().movementHandler().setMovementInput(movementInput.moveForward, movementInput.moveStrafe);
         DaFlight.instance().movementHandler().applyMovement(direction, rotation);
-
         Minecraft.getMinecraft().mcProfiler.endSection();
-
         super.moveEntity(direction.getX(), direction.getY(), direction.getZ());
     }
 
@@ -75,6 +69,15 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer
     protected float getJumpUpwardsMotion()
     {
         return DaFlight.instance().movementHandler().jump(super.getJumpUpwardsMotion());
+    }
+
+    private void updateFlyStatus()
+    {
+        if (!capabilities.isFlying && DaFlight.instance().movementHandler().flying())
+        {
+            capabilities.isFlying = true;
+            sendPlayerAbilities();
+        }
     }
 
     private static String serverName()
