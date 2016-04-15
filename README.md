@@ -1,7 +1,5 @@
 #DaFlight
 
-## Installation
-
 ### Install With Forge/Liteloader
 - Download and run the DaFlight Installer
 - Select the 'extract' option, and change the target directory to your `mods/<mc_version>` folder
@@ -16,5 +14,5 @@
 
 ----
 
-## Releases
+### Get It
 Visit [this page](https://github.com/DaFlight/DaFlight/releases) to view DaFlight downloads
