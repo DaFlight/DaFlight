@@ -7,7 +7,6 @@
     "MixinEntityPlayerSP",
     "MixinEntityRenderer",
     "MixinMinecraft",
-    "MixinMovementInput",
     "MixinNetHandlerClient"
   ]
 }
