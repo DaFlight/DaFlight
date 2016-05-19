@@ -56,6 +56,9 @@ public class MessageHandler
 
     private static void send(CPacketCustomPayload payload)
     {
-        Minecraft.getMinecraft().getNetHandler().addToSendQueue(payload);
+        if (Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().thePlayer.connection != null)
+        {
+            Minecraft.getMinecraft().thePlayer.connection.sendPacket(payload);
+        }
     }
 }
