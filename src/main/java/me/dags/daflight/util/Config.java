@@ -33,6 +33,7 @@ public class Config
 
     public boolean disabled = false;
     public boolean hud = true;
+    public boolean speedometer = false;
     public boolean flight3D = false;
     public boolean disableFov = true;
 
