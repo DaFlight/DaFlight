@@ -32,7 +32,7 @@ minecraft {
 }
 
 group = 'me.dags'
-version = "3.1r4-mc$minecraft.version"
+version = "3.2r1-mc$minecraft.version"
 
 repositories {
     maven {
