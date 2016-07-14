@@ -25,14 +25,14 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
 minecraft {
-    version = "1.9.4"
-	    mappings = "snapshot_20160519"
+    version = "1.10.2"
+    mappings = "snapshot_20160630"
     runDir = 'run'
     tweakClass = 'me.dags.daflight.launch.DaFlightTweaker'
 }
 
 group = 'me.dags'
-version = "4.2r1-mc$minecraft.version"
+version = "5.0pre1-mc$minecraft.version"
 
 repositories {
     maven {

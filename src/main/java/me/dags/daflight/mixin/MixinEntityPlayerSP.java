@@ -7,9 +7,11 @@ import me.dags.daflight.util.Vector3d;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.util.MovementInput;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
 /**
  * @author dags_ <dags@dags.me>
@@ -26,6 +28,10 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer
         super(worldIn, playerProfile);
     }
 
+    // Can't seem to shadow this when forge is in play :/
+    // @Shadow
+    // void func_189810_i(float x, float z){}
+
     @Override
     public void moveEntity(double x, double y, double z)
     {
@@ -33,11 +39,20 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer
         updateFlyStatus();
         direction.update(x, y, z);
         rotation.update(rotationPitch, rotationYaw);
-        MovementInput movementInput = Minecraft.getMinecraft().thePlayer.movementInput;
+
+        EntityPlayerSP entityPlayerSP = (EntityPlayerSP) (Object) this;
+        MovementInput movementInput = entityPlayerSP.movementInput;
         DaFlight.instance().movementHandler().setMovementInput(movementInput.moveForward, movementInput.moveStrafe);
         DaFlight.instance().movementHandler().applyMovement(direction, rotation);
         Minecraft.getMinecraft().mcProfiler.endSection();
+
+        // replicate EntityPlayerSP.moveEntity(..), but use our x,y,z
+        double posX = entityPlayerSP.posX;
+        double posZ = entityPlayerSP.posZ;
         super.moveEntity(direction.getX(), direction.getY(), direction.getZ());
+
+        // Relies on above broken shadow method - not sure what it does but looks like it could be important
+        // this.func_189810_i((float)(entityPlayerSP.posX - posX), (float)(entityPlayerSP.posZ - posZ));
     }
 
     @Override
@@ -81,7 +96,8 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer
     {
         if (!DaFlight.instance().isSinglePlayer())
         {
-            return Minecraft.getMinecraft().getCurrentServerData().serverIP.replace(":", "-").replace("-25565", "");
+            ServerData currentServer = Minecraft.getMinecraft().getCurrentServerData();
+            return currentServer != null ? currentServer.serverIP.replace(":", "-").replace("-25565", "") : "";
         }
         return "";
     }
