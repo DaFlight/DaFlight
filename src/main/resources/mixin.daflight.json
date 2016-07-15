@@ -4,6 +4,7 @@
   "package": "me.dags.daflight.mixin",
   "refmap": "mixin.daflight.refmap.json",
   "mixins": [
+    "MixinAbstractClientPlayer",
     "MixinEntityPlayerSP",
     "MixinEntityRenderer",
     "MixinMinecraft",

@@ -1,6 +1,7 @@
 package me.dags.daflight.mixin;
 
 import me.dags.daflight.DaFlight;
+import me.dags.daflight.MCHooks;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,14 +17,14 @@ public abstract class MixinMinecraft
     @Inject(method = "startGame()V", at = @At("RETURN"))
     public void endStartGame(CallbackInfo callbackInfo)
     {
-        DaFlight.init(Minecraft.getMinecraft().mcDataDir);
+        DaFlight.init(MCHooks.Game.gameDir());
     }
 
     @Inject(method = "runTick()V", at = @At("RETURN"))
     public void endRunTick(CallbackInfo callbackInfo)
     {
-        Minecraft.getMinecraft().mcProfiler.startSection("daFlightTick");
-        DaFlight.instance().tick(Minecraft.getMinecraft().thePlayer != null, Minecraft.getMinecraft().inGameHasFocus);
-        Minecraft.getMinecraft().mcProfiler.endSection();
+        MCHooks.Profiler.startSection("daFlightTick");
+        DaFlight.instance().tick(MCHooks.Game.inGame(), MCHooks.Game.inGameHasFocus());
+        MCHooks.Profiler.endSection();
     }
 }

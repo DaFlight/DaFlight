@@ -1,17 +1,17 @@
 package me.dags.daflight.gui;
 
-import net.minecraft.client.Minecraft;
+import me.dags.daflight.MCHooks;
 
 /**
  * @author dags_ <dags@dags.me>
  */
 
-public class UILabel implements me.dags.daflight.gui.UIElement
+public class UILabel implements UIElement
 {
     private final int height;
     private final int color;
 
-    private String labal = "";
+    private String label = "";
     private int left = 0;
     private int top = 0;
 
@@ -22,29 +22,29 @@ public class UILabel implements me.dags.daflight.gui.UIElement
     }
 
     @Override
-    public me.dags.daflight.gui.UIElement top(int y)
+    public UIElement top(int y)
     {
         top = y;
         return this;
     }
 
     @Override
-    public me.dags.daflight.gui.UIElement left(int x)
+    public UIElement left(int x)
     {
         left = x;
         return this;
     }
 
     @Override
-    public me.dags.daflight.gui.UIElement setValue(Object value)
+    public UIElement setValue(Object value)
     {
         return this;
     }
 
     @Override
-    public me.dags.daflight.gui.UIElement setDisplay(String display)
+    public UIElement setDisplay(String display)
     {
-        labal = display;
+        label = display;
         return this;
     }
 
@@ -57,7 +57,7 @@ public class UILabel implements me.dags.daflight.gui.UIElement
     @Override
     public String getDisplayString()
     {
-        return labal;
+        return label;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class UILabel implements me.dags.daflight.gui.UIElement
     @Override
     public void draw(int mouseX, int mouseY)
     {
-        Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(labal, left, top, color);
+        MCHooks.GUI.drawString(label, left, top, color);
     }
 
     @Override

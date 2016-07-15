@@ -1,11 +1,10 @@
 package me.dags.daflight.gui;
 
 import me.dags.daflight.DaFlight;
+import me.dags.daflight.MCHooks;
 import me.dags.daflight.util.Config;
 import me.dags.daflight.util.ConfigGlobal;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
@@ -66,7 +65,7 @@ public class ConfigScreen extends GuiScreen
         sliders.clear();
         binds.clear();
 
-        int displayWidth = new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth();
+        int displayWidth = MCHooks.GUI.displayWidth();
         int w = 300;
         int l = (displayWidth / 2) - (w / 2);
         int w0 = (w / 2) - 1;
@@ -140,7 +139,7 @@ public class ConfigScreen extends GuiScreen
             updateConfig();
             configGlobal.save();
             DaFlight.instance().updateConfig();
-            Minecraft.getMinecraft().displayGuiScreen(null);
+            MCHooks.GUI.displayScreen(null);
         }
     }
 

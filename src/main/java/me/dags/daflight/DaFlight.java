@@ -8,7 +8,6 @@ import me.dags.daflight.handler.OverlayHandler;
 import me.dags.daflight.util.Config;
 import me.dags.daflight.util.ConfigGlobal;
 import me.dags.daflight.util.FileUtil;
-import net.minecraft.client.Minecraft;
 
 import java.io.File;
 
@@ -28,7 +27,6 @@ public class DaFlight
     private Config config = new Config();
 
     private boolean singlePlayer = false;
-    private boolean inGameHasFocus = false;
     private String serverName = "";
 
     private DaFlight(File mcDir)
@@ -76,11 +74,6 @@ public class DaFlight
         return singlePlayer;
     }
 
-    public boolean inGameHasFocus()
-    {
-        return inGameHasFocus;
-    }
-
     public String getServerName()
     {
         return serverName;
@@ -88,9 +81,8 @@ public class DaFlight
 
     public void tick(boolean inGame, boolean inGameFocus)
     {
-        inGameHasFocus = inGameFocus;
         inputHandler().handleMenuInput();
-        if (inGame && inGameHasFocus)
+        if (inGame && inGameFocus)
         {
             inputHandler().handleInput();
         }
@@ -114,7 +106,7 @@ public class DaFlight
 
     public void displayConfig()
     {
-        Minecraft.getMinecraft().displayGuiScreen(new ConfigScreen(configGlobal));
+        MCHooks.GUI.displayScreen(new ConfigScreen(configGlobal));
     }
 
     public static DaFlight instance()

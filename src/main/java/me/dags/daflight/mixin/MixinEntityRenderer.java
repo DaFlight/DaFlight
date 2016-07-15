@@ -1,7 +1,7 @@
 package me.dags.daflight.mixin;
 
 import me.dags.daflight.DaFlight;
-import net.minecraft.client.Minecraft;
+import me.dags.daflight.MCHooks;
 import net.minecraft.client.renderer.EntityRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,8 +26,8 @@ public abstract class MixinEntityRenderer
     @Inject(method = "updateCameraAndRender", at = @At("RETURN"))
     public void onUpdateCameraAndRender(float partialTicks, long nanoTime, CallbackInfo callbackInfo)
     {
-        Minecraft.getMinecraft().mcProfiler.startSection("daflightOverlay");
+        MCHooks.Profiler.startSection("daflightOverlay");
         DaFlight.instance().overlayHandler().renderGameOverlay();
-        Minecraft.getMinecraft().mcProfiler.endSection();
+        MCHooks.Profiler.endSection();
     }
 }

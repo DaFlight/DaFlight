@@ -1,7 +1,6 @@
 package me.dags.daflight.gui;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import me.dags.daflight.MCHooks;
 import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
@@ -116,17 +115,17 @@ public class UISlider implements UIElement<Float>
     {
         hovered = mouseX >= left && mouseX <= left + width && mouseY >= top && mouseY <= top + height;
 
-        Gui.drawRect(left, top, left + width, top + height, BACKGROUND_COLOR);
+        MCHooks.GUI.drawRectangle(left, top, left + width, top + height, BACKGROUND_COLOR);
 
         if (active)
         {
             sliderPos = mouseX > left + width ? left + width : mouseX < left ? left : mouseX;
         }
-        Gui.drawRect(sliderPos - sliderHalfWidth, top, sliderPos + sliderHalfWidth, top + height, TEXT_COLOR);
+        MCHooks.GUI.drawRectangle(sliderPos - sliderHalfWidth, top, sliderPos + sliderHalfWidth, top + height, TEXT_COLOR);
 
         String val = displayString + ": " + decimal2dp.format(round2dp(this.get()));
-        int valLeft = left + (width / 2) - (Minecraft.getMinecraft().fontRendererObj.getStringWidth(val) / 2);
-        Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(val, valLeft, top + topMargin, hovered ? ACTIVE_COLOR : TEXT_COLOR);
+        int valLeft = left + (width / 2) - (MCHooks.GUI.stringWidth(val) / 2);
+        MCHooks.GUI.drawString(val, valLeft, top + topMargin, hovered ? ACTIVE_COLOR : TEXT_COLOR, true);
     }
 
     @Override

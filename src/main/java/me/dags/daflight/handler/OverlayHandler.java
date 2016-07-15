@@ -1,9 +1,9 @@
 package me.dags.daflight.handler;
 
 import me.dags.daflight.DaFlight;
+import me.dags.daflight.MCHooks;
 import me.dags.daflight.util.Config;
 import me.dags.daflight.util.ConfigGlobal;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -18,7 +18,7 @@ public class OverlayHandler
     public void renderGameOverlay()
     {
         Config config = DaFlight.instance().config();
-        if (config.hud && DaFlight.instance().inGameHasFocus() && !Minecraft.getMinecraft().gameSettings.showDebugInfo)
+        if (config.hud && MCHooks.Game.inGameHasFocus() && !MCHooks.Game.displayDebugInfo())
         {
             ConfigGlobal global = DaFlight.instance().globalConfig();
             MovementHandler handler = DaFlight.instance().movementHandler();
@@ -29,14 +29,14 @@ public class OverlayHandler
             {
                 active = true;
                 String fly = handler.flyBoosting() ? global.flyDisplay + global.boostDisplay : global.flyDisplay;
-                Minecraft.getMinecraft().fontRendererObj.drawString(fly, x, y, 0xFFFFFF);
+                MCHooks.GUI.drawString(fly, x, y, 0xFFFFFF);
                 y += 9;
             }
             if (handler.sprinting())
             {
                 active = true;
                 String sprint = handler.sprintBoosting() ? global.sprintDisplay + global.boostDisplay : global.sprintDisplay;
-                Minecraft.getMinecraft().fontRendererObj.drawString(sprint, x, y, 0xFFFFFF);
+                MCHooks.GUI.drawString(sprint, x, y, 0xFFFFFF);
                 y += 9;
             }
             if (active && DaFlight.instance().config().speedometer)
@@ -53,7 +53,7 @@ public class OverlayHandler
         if (duration >= 500)
         {
             lastTime = time;
-            BlockPos pos = Minecraft.getMinecraft().thePlayer.getPosition();
+            BlockPos pos = MCHooks.Player.position();
             int dx = lastX - pos.getX();
             int dz = lastZ - pos.getZ();
             lastX = pos.getX();
@@ -69,6 +69,6 @@ public class OverlayHandler
                 speed = String.format("%.2f b/s", blocksPerSecond);
             }
         }
-        Minecraft.getMinecraft().fontRendererObj.drawString(speed, x, y, 0xFFFFFF);
+        MCHooks.GUI.drawString(speed, x, y, 0xFFFFFF);
     }
 }

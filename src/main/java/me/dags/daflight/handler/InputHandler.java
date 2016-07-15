@@ -2,9 +2,8 @@ package me.dags.daflight.handler;
 
 import me.dags.daflight.Bind;
 import me.dags.daflight.DaFlight;
+import me.dags.daflight.MCHooks;
 import me.dags.daflight.util.Config;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerCapabilities;
 
 
 /**
@@ -51,27 +50,25 @@ public class InputHandler
 
     public void handleInput()
     {
-        PlayerCapabilities capabilities = Minecraft.getMinecraft().thePlayer.capabilities;
-
         boolean wasFlying = movementHandler.flying;
         boolean wasSprinting = movementHandler.sprinting;
 
         if (flyBind.isToggle())
         {
-            movementHandler.flying = flyBind.keyPress() ? !movementHandler.flying && capabilities.allowFlying : movementHandler.flying;
+            movementHandler.flying = flyBind.keyPress() ? !movementHandler.flying && MCHooks.Player.allowFlying() : movementHandler.flying;
         }
         else
         {
-            movementHandler.flying = flyBind.keyHeld() && capabilities.allowFlying;
+            movementHandler.flying = flyBind.keyHeld() && MCHooks.Player.allowFlying();
         }
 
         if (sprintBind.isToggle())
         {
-            movementHandler.sprinting = sprintBind.keyPress() ? !movementHandler.sprinting && capabilities.allowFlying : movementHandler.sprinting;
+            movementHandler.sprinting = sprintBind.keyPress() ? !movementHandler.sprinting && MCHooks.Player.allowFlying() : movementHandler.sprinting;
         }
         else
         {
-            movementHandler.sprinting = sprintBind.keyHeld() && capabilities.allowFlying;
+            movementHandler.sprinting = sprintBind.keyHeld() && MCHooks.Player.allowFlying();
         }
 
         if (boostBind.isToggle())
@@ -88,7 +85,7 @@ public class InputHandler
             movementHandler.sprintBoosting = !movementHandler.flying && movementHandler.sprinting ? boostBind.keyHeld() : movementHandler.sprintBoosting;
         }
 
-        if (DaFlight.instance().config().disabled || !capabilities.allowFlying)
+        if (DaFlight.instance().config().disabled || !MCHooks.Player.allowFlying())
         {
             boolean updated = movementHandler.flying || movementHandler.sprinting;
             movementHandler.flying = false;
@@ -103,7 +100,7 @@ public class InputHandler
 
         if (wasFlying != movementHandler.flying)
         {
-            capabilities.isFlying = movementHandler.flying;
+            MCHooks.Player.setFlying(movementHandler.flying);
             DaFlight.instance().messageHandler().sendPlayerAbilities();
             DaFlight.instance().messageHandler().sendState(MessageHandler.CHANNEL_FLY, movementHandler.flying);
         }
