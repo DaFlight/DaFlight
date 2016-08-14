@@ -87,7 +87,6 @@ public class MCHooks
 
     public static class Player
     {
-
         public static boolean present()
         {
             return Minecraft.getMinecraft().thePlayer != null;
@@ -113,6 +112,11 @@ public class MCHooks
             return present() && Minecraft.getMinecraft().thePlayer.capabilities.isFlying;
         }
 
+        private static boolean isInvulnerable()
+        {
+            return present() && Minecraft.getMinecraft().thePlayer.isSpectator() || Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode;
+        }
+
         public static void setFlying(boolean state)
         {
             if (present())
@@ -123,7 +127,7 @@ public class MCHooks
 
         public static void setInvincible(boolean state)
         {
-            if (Minecraft.getMinecraft().isSingleplayer())
+            if (Minecraft.getMinecraft().isSingleplayer() && !isInvulnerable())
             {
                 MinecraftServer server = Minecraft.getMinecraft().getIntegratedServer();
                 if (server != null)
