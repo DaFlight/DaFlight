@@ -6,8 +6,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import java.io.File;
@@ -17,8 +20,10 @@ import java.io.File;
  */
 public class MCHooks
 {
+
     public static class Game
     {
+
         public static File gameDir()
         {
             return Minecraft.getMinecraft().mcDataDir;
@@ -42,6 +47,7 @@ public class MCHooks
 
     public static class GUI
     {
+
         public static void displayScreen(GuiScreen screen)
         {
             Minecraft.getMinecraft().displayGuiScreen(screen);
@@ -72,8 +78,7 @@ public class MCHooks
             if (withShadow)
             {
                 Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(string, x, y, colour);
-            }
-            else
+            } else
             {
                 Minecraft.getMinecraft().fontRendererObj.drawString(string, x, y, colour);
             }
@@ -82,6 +87,7 @@ public class MCHooks
 
     public static class Player
     {
+
         public static boolean present()
         {
             return Minecraft.getMinecraft().thePlayer != null;
@@ -99,7 +105,7 @@ public class MCHooks
 
         public static boolean allowFlying()
         {
-            return present() && Minecraft.getMinecraft().thePlayer.capabilities.allowFlying;
+            return present() && (Minecraft.getMinecraft().thePlayer.capabilities.allowFlying || Minecraft.getMinecraft().isSingleplayer());
         }
 
         public static boolean isFlying()
@@ -115,6 +121,23 @@ public class MCHooks
             }
         }
 
+        public static void setInvincible(boolean state)
+        {
+            if (Minecraft.getMinecraft().isSingleplayer())
+            {
+                MinecraftServer server = Minecraft.getMinecraft().getIntegratedServer();
+                if (server != null)
+                {
+                    Entity entity = server.getEntityFromUuid(Minecraft.getMinecraft().thePlayer.getUniqueID());
+                    if (entity != null)
+                    {
+                        EntityPlayerMP playerMP = (EntityPlayerMP) entity;
+                        playerMP.capabilities.disableDamage = state;
+                    }
+                }
+            }
+        }
+
         public static void sendPlayerAbilities()
         {
             if (present())
@@ -125,6 +148,7 @@ public class MCHooks
 
         public static class Input
         {
+
             public static float forward()
             {
                 return present() ? Minecraft.getMinecraft().thePlayer.movementInput.moveForward : 0F;
@@ -139,6 +163,7 @@ public class MCHooks
 
     public static class Network
     {
+
         public static void sendChannels(String channels)
         {
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
@@ -164,6 +189,7 @@ public class MCHooks
 
     public static class Profiler
     {
+
         public static void startSection(String section)
         {
             Minecraft.getMinecraft().mcProfiler.startSection(section);

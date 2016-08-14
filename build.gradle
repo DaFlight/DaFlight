@@ -32,7 +32,7 @@ minecraft {
 }
 
 group = 'me.dags'
-version = "5.0pre2-mc$minecraft.version"
+version = "5.0pre3-mc$minecraft.version"
 
 repositories {
     maven {
@@ -42,10 +42,10 @@ repositories {
 }
 
 dependencies {
-    compile('org.spongepowered:mixin:0.5.6-SNAPSHOT') {
+    compile('org.spongepowered:mixin:0.5.11-SNAPSHOT') {
         transitive = false
     }
-    factory 'org.spongepowered:mixin:0.5.6-SNAPSHOT'
+    factory 'org.spongepowered:mixin:0.5.11-SNAPSHOT'
 }
 processor {
     options.reobfSrgFile = project.tasks.genSrgs.mcpToSrg.path

@@ -144,7 +144,6 @@ public class MovementHandler
         {
             y -= clamp(daFlight.config().flySpeed * boost * daFlight.config().verticalModifier, maxFlySpeed);
         }
-
         direction.update(x, y, z);
     }
 

@@ -3,6 +3,7 @@ package me.dags.daflight.handler;
 import me.dags.daflight.Bind;
 import me.dags.daflight.DaFlight;
 import me.dags.daflight.MCHooks;
+import me.dags.daflight.gui.ConfigScreen;
 import me.dags.daflight.util.Config;
 
 
@@ -101,12 +102,14 @@ public class InputHandler
         if (wasFlying != movementHandler.flying)
         {
             MCHooks.Player.setFlying(movementHandler.flying);
+            MCHooks.Player.setInvincible(movementHandler.flying || movementHandler.sprinting);
             DaFlight.instance().messageHandler().sendPlayerAbilities();
             DaFlight.instance().messageHandler().sendState(MessageHandler.CHANNEL_FLY, movementHandler.flying);
         }
         if (wasSprinting != movementHandler.sprinting)
         {
             DaFlight.instance().messageHandler().sendState(MessageHandler.CHANNEL_SPRINT, movementHandler.sprinting);
+            MCHooks.Player.setInvincible(movementHandler.flying || movementHandler.sprinting);
         }
     }
 }
