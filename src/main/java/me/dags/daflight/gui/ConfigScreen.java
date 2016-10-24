@@ -27,6 +27,7 @@ public class ConfigScreen extends GuiScreen
 
     private UIToggle disable;
     private UIToggle hud;
+    private UIToggle speedometer;
     private UIToggle flight3d;
     private UIToggle disableFov;
     private UIToggle serverConfigs;
@@ -68,15 +69,14 @@ public class ConfigScreen extends GuiScreen
         int displayWidth = new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth();
         int w = 300;
         int l = (displayWidth / 2) - (w / 2);
+        int w0 = (w / 2) - 1;
 
-        elements.add(new UILabel(8, 0xFFFFFF).left(l).setDisplay("Options"));
-        elements.add(disable = new UIToggle(w, 10, "Mod: Disabled", "Mod: Enabled").set(config.disabled).left(l));
-        elements.add(hud = new UIToggle(w, 10, "Hud: Enabled", "Hud: Disabled").set(config.hud).left(l));
-        elements.add(flight3d = new UIToggle(w, 10, "Flight Mode: 3D", "Flight Mode: Normal").set(config.flight3D).left(l));
-        elements.add(disableFov = new UIToggle(w, 10, "FOV Effect: Disabled", "FOV Effect: Enabled").set(config.disableFov).left(l));
-        elements.add(serverConfigs = new UIToggle(w, 10, "Server Configs: Enabled", "Server Configs: Disabled").set(configGlobal.serverConfigs).left(l));
+        elements.add(new UILabel(8, 0x00b3b3).left(l).setDisplay("Options"));
+        elements.add(disable = new UIToggle(w0, 10, "Mod: Off", "Mod: On").set(config.disabled).left(l).attach(hud = new UIToggle(w0, 10, "Hud: On", "Hud: Off").set(config.hud).left(l)));
+        elements.add(speedometer = new UIToggle(w0, 10, "Speedometer: On", "Speedometer: Off").set(config.speedometer).left(l).attach(disableFov = new UIToggle(w0, 10, "FOV Effect: Off", "FOV Effect: On").set(config.disableFov).left(l)));
+        elements.add(flight3d = new UIToggle(w0, 10, "Flight Mode: 3D", "Flight Mode: Normal").set(config.flight3D).left(l).attach(serverConfigs = new UIToggle(w0, 10, "Server Configs: On", "Server Configs: Off").set(configGlobal.serverConfigs).left(l)));
 
-        elements.add(new UILabel(8, 0xFFFFFF).left(l).setDisplay("Tuning"));
+        elements.add(new UILabel(8, 0x00b3b3).left(l).setDisplay("Tuning"));
         register(new UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Fly Speed").setValue(config.flySpeed).setDefault(1F));
         register(new UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Fly Boost").setValue(config.flyBoost).setDefault(2F));
         register(new UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Sprint Speed").setValue(config.sprintSpeed).setDefault(1F));
@@ -87,7 +87,7 @@ public class ConfigScreen extends GuiScreen
 
         int w1 = (w / 3) * 2 - 1;
         int w2 = w - w1 - 2;
-        elements.add(new UILabel(8, 0xFFFFFF).left(l).setDisplay("Binds"));
+        elements.add(new UILabel(8, 0x00b3b3).left(l).setDisplay("Binds"));
         register(new UIBind(w1, 10).left(l).setDisplay("Fly").setValue(config.fly).attach(new UIToggle(w2, 10, "Type: Toggle", "Type: Hold").set(config.flyToggle)).setDefault("F"));
         register(new UIBind(w1, 10).left(l).setDisplay("Sprint").setValue(config.sprint).attach(new UIToggle(w2, 10, "Type: Toggle", "Type: Hold").set(config.sprintToggle)).setDefault("R"));
         register(new UIBind(w1, 10).left(l).setDisplay("Boost").setValue(config.boost).attach(new UIToggle(w2, 10, "Type: Toggle", "Type: Hold").set(config.boostToggle)).setDefault("X"));
@@ -168,6 +168,7 @@ public class ConfigScreen extends GuiScreen
 
         config.disabled = disable.boolValue();
         config.hud = hud.boolValue();
+        config.speedometer = speedometer.boolValue();
         config.flight3D = flight3d.boolValue();
         config.disableFov = disableFov.boolValue();
 

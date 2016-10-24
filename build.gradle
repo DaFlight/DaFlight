@@ -32,7 +32,7 @@ minecraft {
 }
 
 group = 'me.dags'
-version = "3.1r5-mc$minecraft.version"
+version = "3.2r1-mc$minecraft.version"
 
 repositories {
     maven {
@@ -42,10 +42,10 @@ repositories {
 }
 
 dependencies {
-    compile('org.spongepowered:mixin:0.5.11-SNAPSHOT') {
+    compile('org.spongepowered:mixin:0.5.3-SNAPSHOT') {
         transitive = false
     }
-    factory 'org.spongepowered:mixin:0.5.11-SNAPSHOT'
+    factory 'org.spongepowered:mixin:0.5.3-SNAPSHOT'
 }
 processor {
     options.reobfSrgFile = project.tasks.genSrgs.mcpToSrg.path
@@ -82,7 +82,6 @@ task allJar(type: Jar) {
     from sourceSets.main.output
     from configurations.compile.collect { zipTree(it) }
     exclude 'META-INF/**'
-    exclude 'dummyThing'
 
     manifest {
         attributes commonManifest

@@ -35,6 +35,12 @@ public class UIToggle extends UIBind
         return this;
     }
 
+    public UIToggle attach(UIToggle toggle)
+    {
+        super.attach(toggle);
+        return this;
+    }
+
     @Override
     public void mouseClick(int mouseX, int mouseY, int button)
     {
@@ -44,12 +50,17 @@ public class UIToggle extends UIBind
             super.value = boolValue + "";
             active = true;
         }
+        if (super.toggle != null)
+        {
+            super.toggle.mouseClick(mouseX, mouseY, button);
+        }
     }
 
     @Override
     public void mouseRelease()
     {
         active = false;
+        super.mouseRelease();
     }
 
     @Override

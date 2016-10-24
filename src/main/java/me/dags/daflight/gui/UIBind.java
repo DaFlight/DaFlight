@@ -22,7 +22,7 @@ public class UIBind implements UIElement<String>
     protected String value = "";
     protected String defaultVal = "";
 
-    private UIToggle toggle;
+    protected UIToggle toggle;
 
     public UIBind(int width, int height)
     {
