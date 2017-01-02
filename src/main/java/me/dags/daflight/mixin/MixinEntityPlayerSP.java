@@ -15,9 +15,9 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(EntityPlayerSP.class)
 public class MixinEntityPlayerSP extends AbstractClientPlayer
 {
-    public MixinEntityPlayerSP(World worldIn, GameProfile playerProfile)
+    public MixinEntityPlayerSP(World worldIn)
     {
-        super(worldIn, playerProfile);
+        super(worldIn, new GameProfile(null, null));
     }
 
     @Override

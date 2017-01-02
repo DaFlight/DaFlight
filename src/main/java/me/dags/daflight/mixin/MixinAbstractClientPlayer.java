@@ -6,6 +6,7 @@ import me.dags.daflight.MCHooks;
 import me.dags.daflight.util.Rotation;
 import me.dags.daflight.util.Vector3d;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,14 +21,14 @@ public abstract class MixinAbstractClientPlayer extends EntityPlayer
     private final Vector3d direction = new Vector3d();
     private final Rotation rotation = new Rotation();
 
-    public MixinAbstractClientPlayer(World worldIn, GameProfile playerProfile)
+    public MixinAbstractClientPlayer(World worldIn)
     {
-        super(worldIn, playerProfile);
+        super(worldIn, new GameProfile(null, null));
     }
 
     // Inserts between EntityPlayerSP.moveEntity() and EntityPlayer.moveEntity(), passing the modified x,y,z to EntityPlayer
     @Override
-    public void moveEntity(double x, double y, double z)
+    public void move(MoverType type, double x, double y, double z)
     {
         // Only modify if this Player is the client
         if (MCHooks.Player.isClientPlayer(this))
@@ -39,11 +40,11 @@ public abstract class MixinAbstractClientPlayer extends EntityPlayer
             DaFlight.instance().movementHandler().setMovementInput(MCHooks.Player.Input.forward(), MCHooks.Player.Input.strafe());
             DaFlight.instance().movementHandler().applyMovement(direction, rotation);
             MCHooks.Profiler.endSection();
-            super.moveEntity(direction.getX(), direction.getY(), direction.getZ());
+            super.move(type, direction.getX(), direction.getY(), direction.getZ());
         }
         else
         {
-            super.moveEntity(x, y, z);
+            super.move(type, x, y, z);
         }
     }
 

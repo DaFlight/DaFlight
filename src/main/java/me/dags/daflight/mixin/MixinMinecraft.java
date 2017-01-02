@@ -3,6 +3,8 @@ package me.dags.daflight.mixin;
 import me.dags.daflight.DaFlight;
 import me.dags.daflight.MCHooks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.profiler.ISnooperInfo;
+import net.minecraft.util.IThreadListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -13,8 +15,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft
+        implements IThreadListener, ISnooperInfo
 {
-    @Inject(method = "startGame()V", at = @At("RETURN"))
+    @Inject(method = "init()V", at = @At("RETURN"))
     public void endStartGame(CallbackInfo callbackInfo)
     {
         DaFlight.init(MCHooks.Game.gameDir());

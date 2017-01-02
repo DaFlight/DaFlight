@@ -3,6 +3,7 @@ package me.dags.daflight;
 import com.google.common.base.Charsets;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -89,39 +90,39 @@ public class MCHooks
     {
         public static boolean present()
         {
-            return Minecraft.getMinecraft().thePlayer != null;
+            return getPlayer() != null;
         }
 
         public static boolean isClientPlayer(Object toTest)
         {
-            return Minecraft.getMinecraft().thePlayer == toTest;
+            return getPlayer() == toTest;
         }
 
         public static BlockPos position()
         {
-            return Minecraft.getMinecraft().thePlayer.getPosition();
+            return getPlayer().getPosition();
         }
 
         public static boolean allowFlying()
         {
-            return present() && (Minecraft.getMinecraft().thePlayer.capabilities.allowFlying || Minecraft.getMinecraft().isSingleplayer());
+            return present() && (getPlayer().capabilities.allowFlying || Minecraft.getMinecraft().isSingleplayer());
         }
 
         public static boolean isFlying()
         {
-            return present() && Minecraft.getMinecraft().thePlayer.capabilities.isFlying;
+            return present() && getPlayer().capabilities.isFlying;
         }
 
         private static boolean isInvulnerable()
         {
-            return present() && Minecraft.getMinecraft().thePlayer.isSpectator() || Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode;
+            return present() && getPlayer().isSpectator() || getPlayer().capabilities.isCreativeMode;
         }
 
         public static void setFlying(boolean state)
         {
             if (present())
             {
-                Minecraft.getMinecraft().thePlayer.capabilities.isFlying = state;
+                getPlayer().capabilities.isFlying = state;
             }
         }
 
@@ -132,7 +133,7 @@ public class MCHooks
                 MinecraftServer server = Minecraft.getMinecraft().getIntegratedServer();
                 if (server != null)
                 {
-                    Entity entity = server.getEntityFromUuid(Minecraft.getMinecraft().thePlayer.getUniqueID());
+                    Entity entity = server.getEntityFromUuid(getPlayer().getUniqueID());
                     if (entity != null)
                     {
                         EntityPlayerMP playerMP = (EntityPlayerMP) entity;
@@ -146,7 +147,7 @@ public class MCHooks
         {
             if (present())
             {
-                Minecraft.getMinecraft().thePlayer.sendPlayerAbilities();
+                getPlayer().sendPlayerAbilities();
             }
         }
 
@@ -155,15 +156,21 @@ public class MCHooks
 
             public static float forward()
             {
-                return present() ? Minecraft.getMinecraft().thePlayer.movementInput.moveForward : 0F;
+                return present() ? getPlayer().movementInput.moveForward : 0F;
             }
 
             public static float strafe()
             {
-                return present() ? Minecraft.getMinecraft().thePlayer.movementInput.moveStrafe : 0F;
+                return present() ? getPlayer().movementInput.moveStrafe : 0F;
             }
         }
+
+        private static EntityPlayerSP getPlayer()
+        {
+            return Minecraft.getMinecraft().player;
+        }
     }
+
 
     public static class Network
     {
@@ -184,9 +191,9 @@ public class MCHooks
 
         private static void sendPayload(CPacketCustomPayload packetCustomPayload)
         {
-            if (Player.present() && Minecraft.getMinecraft().thePlayer.connection != null)
+            if (Player.present() && Player.getPlayer().connection != null)
             {
-                Minecraft.getMinecraft().thePlayer.connection.sendPacket(packetCustomPayload);
+                Player.getPlayer().connection.sendPacket(packetCustomPayload);
             }
         }
     }
