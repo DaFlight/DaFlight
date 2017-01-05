@@ -70,5 +70,6 @@ public class OverlayHandler
             }
         }
         MCHooks.GUI.drawString(speed, x, y, 0xFFFFFF);
+        Minecraft.getMinecraft().fontRendererObj.drawString(speed, x, y, 0xFFFFFF);
     }
 }
