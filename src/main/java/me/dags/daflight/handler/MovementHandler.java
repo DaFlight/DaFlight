@@ -1,6 +1,7 @@
 package me.dags.daflight.handler;
 
 import me.dags.daflight.DaFlight;
+import me.dags.daflight.MCHooks;
 import me.dags.daflight.util.Rotation;
 import me.dags.daflight.util.Vector3d;
 
@@ -135,15 +136,14 @@ public class MovementHandler
         {
             y += -rotation.getPitch() * moveForward * (0.9F / 50F) * daFlight.config().verticalModifier * clamp(daFlight.config().flySpeed * boost, maxFlySpeed);
         }
-        if (DaFlight.instance().inputHandler().getFlyUpBind().keyHeld() && DaFlight.instance().inGameHasFocus())
+        if (DaFlight.instance().inputHandler().getFlyUpBind().keyHeld() && MCHooks.Game.inGameHasFocus())
         {
             y += clamp(daFlight.config().flySpeed * boost * daFlight.config().verticalModifier, maxFlySpeed);
         }
-        if (DaFlight.instance().inputHandler().getFlyDownBind().keyHeld() && DaFlight.instance().inGameHasFocus())
+        if (DaFlight.instance().inputHandler().getFlyDownBind().keyHeld() && MCHooks.Game.inGameHasFocus())
         {
             y -= clamp(daFlight.config().flySpeed * boost * daFlight.config().verticalModifier, maxFlySpeed);
         }
-
         direction.update(x, y, z);
     }
 

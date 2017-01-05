@@ -1,7 +1,6 @@
 package me.dags.daflight.gui;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import me.dags.daflight.MCHooks;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -103,10 +102,10 @@ public class UIBind implements UIElement<String>
     public void draw(int mouseX, int mouseY)
     {
         mouseOver = mouseX >= left && mouseX <= left + width && mouseY >= top && mouseY <= top + height;
-        Gui.drawRect(left, top, left + width, top + height, BACKGROUND_COLOR);
+        MCHooks.GUI.drawRectangle(left, top, left + width, top + height, BACKGROUND_COLOR);
         String str = getText();
-        int textLeft = left + (width / 2) - (Minecraft.getMinecraft().fontRendererObj.getStringWidth(str) / 2);
-        Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(str, textLeft, top + 1, active ? ACTIVE_COLOR : TEXT_COLOR);
+        int textLeft = left + (width / 2) - (MCHooks.GUI.stringWidth(str) / 2);
+        MCHooks.GUI.drawString(str, textLeft, top, active ? ACTIVE_COLOR : TEXT_COLOR, true);
 
         if (toggle != null)
         {

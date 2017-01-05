@@ -1,11 +1,8 @@
 package me.dags.daflight.handler;
 
-import com.google.common.base.Charsets;
-import io.netty.buffer.Unpooled;
 import me.dags.daflight.DaFlight;
-import net.minecraft.client.Minecraft;
+import me.dags.daflight.MCHooks;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.C17PacketCustomPayload;
 
 /**
  * @author dags <dags@dags.me>
@@ -33,29 +30,22 @@ public class MessageHandler
     public void registerChannels()
     {
         String channels = CHANNEL_FLY + "\u0000" + CHANNEL_SPRINT + "\u0000" + CHANNEL_CONNECT;
-        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-        buffer.writeBytes(channels.getBytes(Charsets.UTF_8));
-        send(new C17PacketCustomPayload("REGISTER", buffer));
+        MCHooks.Network.sendChannels(channels);
     }
 
     public void connect()
     {
-        send(new C17PacketCustomPayload(CHANNEL_CONNECT, new PacketBuffer(Unpooled.wrappedBuffer(new byte[0]))));
+        MCHooks.Network.sendMessageBytes(CHANNEL_CONNECT, new byte[0]);
     }
 
     void sendPlayerAbilities()
     {
-        Minecraft.getMinecraft().thePlayer.sendPlayerAbilities();
+        MCHooks.Player.sendPlayerAbilities();
     }
 
     void sendState(String channel, boolean value)
     {
         byte[] data = {value ? (byte) 1 : (byte) 0};
-        send(new C17PacketCustomPayload(channel, new PacketBuffer(Unpooled.wrappedBuffer(data))));
-    }
-
-    private static void send(C17PacketCustomPayload payload)
-    {
-        Minecraft.getMinecraft().getNetHandler().addToSendQueue(payload);
+        MCHooks.Network.sendMessageBytes(channel, data);
     }
 }

@@ -1,7 +1,10 @@
 package me.dags.daflight.mixin;
 
 import me.dags.daflight.DaFlight;
+import me.dags.daflight.MCHooks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.profiler.ISnooperInfo;
+import net.minecraft.util.IThreadListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -12,18 +15,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft
+        implements IThreadListener, ISnooperInfo
 {
-    @Inject(method = "startGame()V", at = @At("RETURN"))
+    @Inject(method = "init()V", at = @At("RETURN"))
     public void endStartGame(CallbackInfo callbackInfo)
     {
-        DaFlight.init(Minecraft.getMinecraft().mcDataDir);
+        DaFlight.init(MCHooks.Game.gameDir());
     }
 
     @Inject(method = "runTick()V", at = @At("RETURN"))
     public void endRunTick(CallbackInfo callbackInfo)
     {
-        Minecraft.getMinecraft().mcProfiler.startSection("daFlightTick");
-        DaFlight.instance().tick(Minecraft.getMinecraft().thePlayer != null, Minecraft.getMinecraft().inGameHasFocus);
-        Minecraft.getMinecraft().mcProfiler.endSection();
+        MCHooks.Profiler.startSection("daFlightTick");
+        DaFlight.instance().tick(MCHooks.Game.inGame(), MCHooks.Game.inGameHasFocus());
+        MCHooks.Profiler.endSection();
     }
 }
