@@ -61,7 +61,7 @@ public class MCHooks
 
         public static int stringWidth(String in)
         {
-            return Minecraft.getMinecraft().fontRendererObj.getStringWidth(in);
+            return Minecraft.getMinecraft().fontRenderer.getStringWidth(in);
         }
 
         public static void drawRectangle(int left, int top, int right, int bottom, int color)
@@ -78,10 +78,10 @@ public class MCHooks
         {
             if (withShadow)
             {
-                Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(string, x, y, colour);
+                Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(string, x, y, colour);
             } else
             {
-                Minecraft.getMinecraft().fontRendererObj.drawString(string, x, y, colour);
+                Minecraft.getMinecraft().fontRenderer.drawString(string, x, y, colour);
             }
         }
     }
