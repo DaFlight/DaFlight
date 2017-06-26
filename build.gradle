@@ -25,8 +25,8 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
 minecraft {
-    version = "1.11.2"
-    mappings = "snapshot_20161224"
+    version = "1.12"
+    mappings = "snapshot_20170618"
     runDir = 'run'
     tweakClass = 'me.dags.daflight.launch.DaFlightTweaker'
 }
@@ -42,10 +42,10 @@ repositories {
 }
 
 dependencies {
-    compile('org.spongepowered:mixin:0.6.4-SNAPSHOT') {
+    compile('org.spongepowered:mixin:0.6.10-SNAPSHOT') {
         transitive = false
     }
-    factory 'org.spongepowered:mixin:0.6.4-SNAPSHOT'
+    factory 'org.spongepowered:mixin:0.6.10-SNAPSHOT'
 }
 processor {
     options.reobfSrgFile = project.tasks.genSrgs.mcpToSrg.path
