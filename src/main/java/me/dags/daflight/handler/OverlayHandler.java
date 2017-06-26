@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
  */
 public class OverlayHandler
 {
-    private int lastX = 0, lastZ = 0;
+    private int lastX = 0, lastY = 0, lastZ = 0;
     private long lastTime = 0L;
     private String speed = "0";
 
@@ -54,12 +54,15 @@ public class OverlayHandler
         {
             lastTime = time;
             BlockPos pos = MCHooks.Player.position();
-            int dx = lastX - pos.getX();
-            int dz = lastZ - pos.getZ();
+            double distance = pos.getDistance(lastX, lastY, lastZ);
+
             lastX = pos.getX();
+            lastY = pos.getY();
             lastZ = pos.getZ();
+
             // checking every 500ms (1/2 second) so x2 to get distance / second
-            double blocksPerSecond = 2D * Math.sqrt((dx*dx) + (dz*dz)) / (duration / 500D);
+            double blocksPerSecond = (2D * distance) / (duration / 500D);
+
             if (blocksPerSecond > 16000)
             {
                 speed = String.format("%.2f c/s", blocksPerSecond / 16D);
