@@ -14,8 +14,8 @@ import java.io.File;
 /**
  * @author dags <dags@dags.me>
  */
-public class DaFlight
-{
+public class DaFlight {
+
     private static DaFlight instance;
 
     private final MovementHandler movementHandler;
@@ -29,8 +29,7 @@ public class DaFlight
     private boolean singlePlayer = false;
     private String serverName = "";
 
-    private DaFlight(File mcDir)
-    {
+    private DaFlight(File mcDir) {
         File configDir = FileUtil.createFolder(mcDir, "config");
         movementHandler = new MovementHandler(this);
         messageHandler = new MessageHandler();
@@ -39,85 +38,68 @@ public class DaFlight
         inputHandler = new InputHandler(configGlobal.getGlobalConfig(), movementHandler);
     }
 
-    public ConfigGlobal globalConfig()
-    {
+    public ConfigGlobal globalConfig() {
         return configGlobal;
     }
 
-    public Config config()
-    {
+    public Config config() {
         return config;
     }
 
-    public InputHandler inputHandler()
-    {
+    public InputHandler inputHandler() {
         return inputHandler;
     }
 
-    public MessageHandler messageHandler()
-    {
+    public MessageHandler messageHandler() {
         return messageHandler;
     }
 
-    public OverlayHandler overlayHandler()
-    {
+    public OverlayHandler overlayHandler() {
         return overlayHandler;
     }
 
-    public MovementHandler movementHandler()
-    {
+    public MovementHandler movementHandler() {
         return movementHandler;
     }
 
-    public boolean isSinglePlayer()
-    {
+    public boolean isSinglePlayer() {
         return singlePlayer;
     }
 
-    public String getServerName()
-    {
+    public String getServerName() {
         return serverName;
     }
 
-    public void tick(boolean inGame, boolean inGameFocus)
-    {
+    public void tick(boolean inGame, boolean inGameFocus) {
         inputHandler().handleMenuInput();
-        if (inGame && inGameFocus)
-        {
+        if (inGame && inGameFocus) {
             inputHandler().handleInput();
         }
     }
 
-    public void setSinglePlayer(boolean singlePlayer)
-    {
+    public void setSinglePlayer(boolean singlePlayer) {
         this.singlePlayer = singlePlayer;
     }
 
-    public void setServerName(String serverName)
-    {
+    public void setServerName(String serverName) {
         this.serverName = serverName;
     }
 
-    public void updateConfig()
-    {
+    public void updateConfig() {
         config = configGlobal.getActiveConfig();
         inputHandler = new InputHandler(config, movementHandler);
     }
 
-    public void displayConfig()
-    {
+    public void displayConfig() {
         MCHooks.GUI.displayScreen(new ConfigScreen(configGlobal));
     }
 
-    public static DaFlight instance()
-    {
+    public static DaFlight instance() {
         return instance;
     }
 
-    public static void init(File mcDataDir)
-    {
-        if (instance == null)
-        {
+    public static void init(File mcDataDir) {
+        if (instance == null) {
             instance = new DaFlight(mcDataDir);
         }
     }

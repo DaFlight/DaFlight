@@ -16,23 +16,20 @@ import org.spongepowered.asm.mixin.Mixin;
  */
 
 @Mixin(AbstractClientPlayer.class)
-public abstract class MixinAbstractClientPlayer extends EntityPlayer
-{
+public abstract class MixinAbstractClientPlayer extends EntityPlayer {
+
     private final Vector3d direction = new Vector3d();
     private final Rotation rotation = new Rotation();
 
-    public MixinAbstractClientPlayer(World worldIn)
-    {
+    public MixinAbstractClientPlayer(World worldIn) {
         super(worldIn, new GameProfile(null, null));
     }
 
     // Inserts between EntityPlayerSP.moveEntity() and EntityPlayer.moveEntity(), passing the modified x,y,z to EntityPlayer
     @Override
-    public void move(MoverType type, double x, double y, double z)
-    {
+    public void move(MoverType type, double x, double y, double z) {
         // Only modify if this Player is the client
-        if (MCHooks.Player.isClientPlayer(this))
-        {
+        if (MCHooks.Player.isClientPlayer(this)) {
             MCHooks.Profiler.startSection("daflightMove");
             updateFlyStatus();
             direction.update(x, y, z);
@@ -41,17 +38,13 @@ public abstract class MixinAbstractClientPlayer extends EntityPlayer
             DaFlight.instance().movementHandler().applyMovement(direction, rotation);
             MCHooks.Profiler.endSection();
             super.move(type, direction.getX(), direction.getY(), direction.getZ());
-        }
-        else
-        {
+        } else {
             super.move(type, x, y, z);
         }
     }
 
-    private void updateFlyStatus()
-    {
-        if (!MCHooks.Player.isFlying() && DaFlight.instance().movementHandler().flying())
-        {
+    private void updateFlyStatus() {
+        if (!MCHooks.Player.isFlying() && DaFlight.instance().movementHandler().flying()) {
             MCHooks.Player.setFlying(true);
             MCHooks.Player.sendPlayerAbilities();
         }

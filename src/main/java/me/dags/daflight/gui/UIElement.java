@@ -4,8 +4,8 @@ package me.dags.daflight.gui;
  * @author dags_ <dags@dags.me>
  */
 
-public interface UIElement<T>
-{
+public interface UIElement<T> {
+
     public static final int BACKGROUND_COLOR = 0x99999999;
     public static final int TEXT_COLOR = 0xFFFFFFFF;
     public static final int ACTIVE_COLOR = 0xFFFFFFB3;

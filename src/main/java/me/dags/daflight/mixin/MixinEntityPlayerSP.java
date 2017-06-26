@@ -13,22 +13,19 @@ import org.spongepowered.asm.mixin.Mixin;
  * @author dags <dags@dags.me>
  */
 @Mixin(EntityPlayerSP.class)
-public class MixinEntityPlayerSP extends AbstractClientPlayer
-{
-    public MixinEntityPlayerSP(World worldIn)
-    {
+public class MixinEntityPlayerSP extends AbstractClientPlayer {
+
+    public MixinEntityPlayerSP(World worldIn) {
         super(worldIn, new GameProfile(null, null));
     }
 
     @Override
-    public float getFovModifier()
-    {
+    public float getFovModifier() {
         return DaFlight.instance().movementHandler().disableFov() ? 1.0F : super.getFovModifier();
     }
 
     @Override
-    public void preparePlayerToSpawn()
-    {
+    public void preparePlayerToSpawn() {
         super.preparePlayerToSpawn();
         DaFlight.instance().setSinglePlayer(Minecraft.getMinecraft().isSingleplayer());
         DaFlight.instance().setServerName(serverName());
@@ -39,15 +36,12 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer
     }
 
     @Override
-    protected float getJumpUpwardsMotion()
-    {
+    protected float getJumpUpwardsMotion() {
         return DaFlight.instance().movementHandler().jump(super.getJumpUpwardsMotion());
     }
 
-    private static String serverName()
-    {
-        if (!DaFlight.instance().isSinglePlayer())
-        {
+    private static String serverName() {
+        if (!DaFlight.instance().isSinglePlayer()) {
             ServerData currentServer = Minecraft.getMinecraft().getCurrentServerData();
             return currentServer != null ? currentServer.serverIP.replace(":", "-").replace("-25565", "") : "";
         }

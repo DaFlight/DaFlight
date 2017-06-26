@@ -8,8 +8,8 @@ import java.io.File;
  * @author dags_ <dags@dags.me>
  */
 
-public class Config
-{
+public class Config {
+
     private transient File saveFile;
 
     public float flySpeed = 1F;
@@ -37,16 +37,13 @@ public class Config
     public boolean flight3D = false;
     public boolean disableFov = true;
 
-    public void save()
-    {
+    public void save() {
         if (saveFile != null) FileUtil.serialize(this, saveFile);
     }
 
-    public static Config getOrCreate(File file)
-    {
+    public static Config getOrCreate(File file) {
         Optional<Config> optional = FileUtil.deserialize(file, Config.class);
-        if (optional.isPresent())
-        {
+        if (optional.isPresent()) {
             optional.get().saveFile = file;
             return optional.get();
         }

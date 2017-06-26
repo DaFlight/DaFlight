@@ -17,8 +17,8 @@ import java.util.Map;
  * @author dags_ <dags@dags.me>
  */
 
-public class ConfigScreen extends GuiScreen
-{
+public class ConfigScreen extends GuiScreen {
+
     private List<UIElement> elements = new ArrayList<UIElement>();
 
     private Map<String, UISlider> sliders = new LinkedHashMap<String, UISlider>();
@@ -34,30 +34,24 @@ public class ConfigScreen extends GuiScreen
     private ConfigGlobal configGlobal;
     private Config config;
 
-    public ConfigScreen(ConfigGlobal configGlobal)
-    {
+    public ConfigScreen(ConfigGlobal configGlobal) {
         this.configGlobal = configGlobal;
         this.config = configGlobal.getActiveConfig();
     }
 
-    private void register(UIElement element)
-    {
-        if (element instanceof UISlider)
-        {
+    private void register(UIElement element) {
+        if (element instanceof UISlider) {
             sliders.put(element.getDisplayString(), (UISlider) element);
         }
-        if (element instanceof UIBind)
-        {
+        if (element instanceof UIBind) {
             binds.put(element.getDisplayString(), (UIBind) element);
         }
         elements.add(element);
     }
 
     @Override
-    public void initGui()
-    {
-        if (!elements.isEmpty())
-        {
+    public void initGui() {
+        if (!elements.isEmpty()) {
             updateConfig();
         }
 
@@ -96,46 +90,37 @@ public class ConfigScreen extends GuiScreen
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
         int top = 5;
-        for (UIElement s : elements)
-        {
+        for (UIElement s : elements) {
             s.top(top).draw(mouseX, mouseY);
             top += s.getHeight() + 2;
         }
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
-    {
-        for (UIElement s : elements)
-        {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        for (UIElement s : elements) {
             s.mouseClick(mouseX, mouseY, mouseButton);
         }
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        for (UIElement s : elements)
-        {
+    public void mouseReleased(int mouseX, int mouseY, int state) {
+        for (UIElement s : elements) {
             s.mouseRelease();
         }
     }
 
     @Override
-    public void keyTyped(char typedChar, int keyCode) throws IOException
-    {
+    public void keyTyped(char typedChar, int keyCode) throws IOException {
         boolean activeAndEsc = false;
-        for (UIElement e : elements)
-        {
+        for (UIElement e : elements) {
             activeAndEsc = activeAndEsc || e.active() && keyCode == Keyboard.KEY_ESCAPE;
             e.keyType(typedChar, keyCode);
         }
-        if (keyCode == Keyboard.KEY_ESCAPE && !activeAndEsc)
-        {
+        if (keyCode == Keyboard.KEY_ESCAPE && !activeAndEsc) {
             updateConfig();
             configGlobal.save();
             DaFlight.instance().updateConfig();
@@ -143,8 +128,7 @@ public class ConfigScreen extends GuiScreen
         }
     }
 
-    private void updateConfig()
-    {
+    private void updateConfig() {
         config.flySpeed = sliders.get("Fly Speed").get();
         config.flyBoost = sliders.get("Fly Boost").get();
         config.sprintSpeed = sliders.get("Sprint Speed").get();

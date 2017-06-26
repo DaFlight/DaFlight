@@ -14,18 +14,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * @author dags <dags@dags.me>
  */
 @Mixin(Minecraft.class)
-public abstract class MixinMinecraft
-        implements IThreadListener, ISnooperInfo
-{
+public abstract class MixinMinecraft implements IThreadListener, ISnooperInfo {
+
     @Inject(method = "init()V", at = @At("RETURN"))
-    public void endStartGame(CallbackInfo callbackInfo)
-    {
+    public void endStartGame(CallbackInfo callbackInfo) {
         DaFlight.init(MCHooks.Game.gameDir());
     }
 
     @Inject(method = "runTick()V", at = @At("RETURN"))
-    public void endRunTick(CallbackInfo callbackInfo)
-    {
+    public void endRunTick(CallbackInfo callbackInfo) {
         MCHooks.Profiler.startSection("daFlightTick");
         DaFlight.instance().tick(MCHooks.Game.inGame(), MCHooks.Game.inGameHasFocus());
         MCHooks.Profiler.endSection();

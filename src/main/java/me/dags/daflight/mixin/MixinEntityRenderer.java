@@ -12,20 +12,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * @author dags <dags@dags.me>
  */
 @Mixin(EntityRenderer.class)
-public abstract class MixinEntityRenderer
-{
+public abstract class MixinEntityRenderer {
+
     @Inject(method = "applyBobbing(F)V", at = @At("HEAD"), cancellable = true)
-    private void onApplyBobbing(float partialTicks, CallbackInfo callbackInfo)
-    {
-        if (DaFlight.instance().movementHandler().disableViewBob())
-        {
+    private void onApplyBobbing(float partialTicks, CallbackInfo callbackInfo) {
+        if (DaFlight.instance().movementHandler().disableViewBob()) {
             callbackInfo.cancel();
         }
     }
 
     @Inject(method = "updateCameraAndRender(FJ)V", at = @At("RETURN"))
-    public void onUpdateCameraAndRender(float partialTicks, long nanoTime, CallbackInfo callbackInfo)
-    {
+    public void onUpdateCameraAndRender(float partialTicks, long nanoTime, CallbackInfo callbackInfo) {
         MCHooks.Profiler.startSection("daflightOverlay");
         DaFlight.instance().overlayHandler().renderGameOverlay();
         MCHooks.Profiler.endSection();

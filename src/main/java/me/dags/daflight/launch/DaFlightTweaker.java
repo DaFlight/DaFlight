@@ -16,60 +16,49 @@ import java.util.List;
  * @author dags_ <dags@dags.me>
  */
 
-public class DaFlightTweaker implements ITweaker
-{
+public class DaFlightTweaker implements ITweaker {
+
     private final List<String> args = new ArrayList<String>();
 
     @Override
-    public void acceptOptions(List<String> list, File gameDir, File assetsDir, String profile)
-    {
+    public void acceptOptions(List<String> list, File gameDir, File assetsDir, String profile) {
         args.addAll(list);
-        if (!args.contains("--version") && profile != null)
-        {
+        if (!args.contains("--version") && profile != null) {
             this.args.add("--version");
             this.args.add(profile);
         }
-        if (!args.contains("--assetsDir") && assetsDir != null)
-        {
+        if (!args.contains("--assetsDir") && assetsDir != null) {
             this.args.add("--assetsDir");
             this.args.add(assetsDir.getPath());
         }
-        if (!args.contains("--gameDir") && gameDir != null)
-        {
+        if (!args.contains("--gameDir") && gameDir != null) {
             this.args.add("--gameDir");
             this.args.add(gameDir.getPath());
         }
     }
 
     @Override
-    public void injectIntoClassLoader(LaunchClassLoader launchClassLoader)
-    {
+    public void injectIntoClassLoader(LaunchClassLoader launchClassLoader) {
         MixinBootstrap.init();
         Mixins.addConfiguration("mixin.daflight.json");
-        if (fmlIsPresent())
-        {
+        if (fmlIsPresent()) {
             MixinEnvironment.getDefaultEnvironment().setObfuscationContext("searge");
         }
     }
 
     @Override
-    public String getLaunchTarget()
-    {
+    public String getLaunchTarget() {
         return "net.minecraft.client.main.Main";
     }
 
     @Override
-    public String[] getLaunchArguments()
-    {
+    public String[] getLaunchArguments() {
         return args.toArray(new String[args.size()]);
     }
 
-    private static boolean fmlIsPresent()
-    {
-        for (IClassTransformer transformer : Launch.classLoader.getTransformers())
-        {
-            if (transformer.getClass().getName().contains("fml"))
-            {
+    private static boolean fmlIsPresent() {
+        for (IClassTransformer transformer : Launch.classLoader.getTransformers()) {
+            if (transformer.getClass().getName().contains("fml")) {
                 return true;
             }
         }

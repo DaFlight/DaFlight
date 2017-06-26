@@ -12,11 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * @author dags <dags@dags.me>
  */
 @Mixin(NetHandlerPlayClient.class)
-public abstract class MixinNetHandlerClient
-{
+public abstract class MixinNetHandlerClient {
+
     @Inject(method = "handleCustomPayload(Lnet/minecraft/network/play/server/SPacketCustomPayload;)V", at = @At("RETURN"))
-    public void handleCustomPayload(SPacketCustomPayload packetIn, CallbackInfo callbackInfo)
-    {
+    public void handleCustomPayload(SPacketCustomPayload packetIn, CallbackInfo callbackInfo) {
         DaFlight.instance().messageHandler().handlePacket(packetIn.getChannelName(), packetIn.getBufferData());
     }
 }
