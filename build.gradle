@@ -32,7 +32,9 @@ minecraft {
 }
 
 group = 'me.dags'
-version = "5.1pre0-mc$minecraft.version"
+version = "5.1-mc$minecraft.version"
+
+targetCompatibility = sourceCompatibility = "1.8"
 
 repositories {
     maven {
@@ -42,23 +44,27 @@ repositories {
 }
 
 dependencies {
-    compile('org.spongepowered:mixin:0.6.10-SNAPSHOT') {
+    compile('org.spongepowered:mixin:0.6.11-SNAPSHOT') {
         transitive = false
     }
-    factory 'org.spongepowered:mixin:0.6.10-SNAPSHOT'
+    factory 'org.spongepowered:mixin:0.6.11-SNAPSHOT'
 }
+
 processor {
     options.reobfSrgFile = project.tasks.genSrgs.mcpToSrg.path
 }
+
 sourceSets {
     main {
         refMap = 'mixin.daflight.refmap.json'
     }
 }
+
 mixin {
 //    add sourceSets.main, 'mixin.daflight.refmap.json'
     defaultObfuscationEnv notch
 }
+
 def commonManifest = [
         'Built-By'              : 'ForgeGradle',
         'Implementation-Vendor' : 'dags',
@@ -69,6 +75,7 @@ def commonManifest = [
         'TweakVersion'          : project.version,
         'TweakAuthor'           : 'dags'
 ]
+
 jar {
     classifier 'minimal'
     afterEvaluate {
@@ -77,11 +84,13 @@ jar {
         }
     }
 }
+
 task allJar(type: Jar) {
 
     from sourceSets.main.output
     from configurations.compile.collect { zipTree(it) }
     exclude 'META-INF/**'
+    exclude 'dummyThing'
 
     manifest {
         attributes commonManifest
@@ -125,11 +134,13 @@ task processJson(type: Copy) {
     into 'build/distributions/packaging/resources'
     outputs.upToDateWhen { false }
 }
+
 task downloadInstaller(type: EtagDownloadTask) {
     url = 'http://files.minecraftforge.net/maven/net/minecraftforge/installer/1.5/installer-1.5-shrunk.jar'
     dieWithError = true
     file = 'build/distributions/packaging/installer-fresh.jar'
 }
+
 task installer(type: Zip) {
     from allJar
     from processJson
