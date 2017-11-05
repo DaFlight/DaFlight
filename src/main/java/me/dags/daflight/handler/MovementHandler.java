@@ -91,36 +91,35 @@ public class MovementHandler {
     }
 
     private void moveFlying(Vector3d direction, Rotation rotation) {
-        double x = 0;
-        double y = 0;
-        double z = 0;
-        double rads = Math.toRadians(rotation.getYaw());
-        double dx = -Math.sin(rads);
-        double dz = Math.cos(rads);
+        double x, y, z;
+        double yaw = Math.toRadians(rotation.getYaw());
+        double pitch = Math.toRadians(rotation.getPitch());
         float boost = flyBoosting ? daFlight.config().flyBoost : 1F;
 
-        if (moveForward != 0) {
-            x += dx * moveForward * clamp(daFlight.config().flySpeed * boost, maxFlySpeed);
-            z += dz * moveForward * clamp(daFlight.config().flySpeed * boost, maxFlySpeed);
+        if (daFlight.config().flight3D) {
+            x = moveForward * -Math.sin(yaw) * Math.abs(Math.cos(pitch));
+            y = moveForward * -Math.sin(pitch);
+            z = moveForward * Math.cos(yaw) * Math.abs(Math.cos(pitch));
+        } else {
+            x = moveForward * -Math.sin(yaw);
+            y = 0;
+            z = moveForward * Math.cos(yaw);
         }
-        if (moveStrafe != 0) {
-            x += dz * moveStrafe * clamp(daFlight.config().flySpeed * daFlight.config().strafeModifier * boost, maxFlySpeed);
-            z += dx * -moveStrafe * clamp(daFlight.config().flySpeed * daFlight.config().strafeModifier * boost, maxFlySpeed);
-        }
-        if (moveForward != 0 && moveStrafe != 0) {
-            x *= SCALE_FACTOR;
-            z *= SCALE_FACTOR;
-        }
-        if (daFlight.config().flight3D && moveForward != 0) {
-            y += -rotation.getPitch() * moveForward * (0.9F / 50F) * daFlight.config().verticalModifier * clamp(daFlight.config().flySpeed * boost, maxFlySpeed);
-        }
+
+        x += moveStrafe * Math.cos(yaw);
+        z += moveStrafe * Math.sin(yaw);
+
         if (DaFlight.instance().inputHandler().getFlyUpBind().keyHeld() && MCHooks.Game.inGameHasFocus()) {
-            y += clamp(daFlight.config().flySpeed * boost * daFlight.config().verticalModifier, maxFlySpeed);
+            y += 1;
         }
+
         if (DaFlight.instance().inputHandler().getFlyDownBind().keyHeld() && MCHooks.Game.inGameHasFocus()) {
-            y -= clamp(daFlight.config().flySpeed * boost * daFlight.config().verticalModifier, maxFlySpeed);
+            y -= 1;
         }
+
         direction.update(x, y, z);
+        direction.normalize();
+        direction.mult(clamp(daFlight.config().flySpeed * boost, maxFlySpeed));
     }
 
     private void moveSprinting(Vector3d direction, Rotation rotation) {
