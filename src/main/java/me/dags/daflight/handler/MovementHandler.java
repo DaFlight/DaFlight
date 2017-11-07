@@ -45,14 +45,6 @@ public class MovementHandler {
         maxWalkSpeed = DaFlight.instance().isSinglePlayer() ? 100000F : 1F;
     }
 
-    public boolean flying() {
-        return flying;
-    }
-
-    public boolean sprinting() {
-        return sprinting;
-    }
-
     public boolean disableFov() {
         return DaFlight.instance().config().disableFov && flying;
     }
