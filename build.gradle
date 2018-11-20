@@ -12,10 +12,10 @@ buildscript {
     }
 }
 
-apply plugin: "java"
 apply plugin: "net.minecraftforge.gradle.tweaker-client"
 apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "org.spongepowered.mixin"
+apply plugin: "java"
 
 group = "me.dags"
 version = "5.2.3-1.12.2"
@@ -42,6 +42,7 @@ dependencies {
 
 mixin {
     defaultObfuscationEnv notch
+    add sourceSets.main, "mixin.daflight.refmap.json"
 }
 
 reobf {
@@ -50,7 +51,7 @@ reobf {
 
 sourceSets {
     main {
-        refMap = "mixin.daflight.refmap.json"
+        compileClasspath += main.compileClasspath
     }
 }
 
