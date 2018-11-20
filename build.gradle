@@ -85,7 +85,7 @@ task processJson(type: Copy) {
     def things = [
             version      : project.version,
             project      : project.name,
-            timestamp    : new Date().format("yyyy"-"MM"-"dd"T"hh":"mm":"ssZZZZ"),
+            timestamp    : new Date().format("yyyy'-'MM'-'dd'T'hh':'mm':'ssZZZZ"),
             mcversion    : project.minecraft.version,
             artifact     : "$project.group:$project.name:$version",
             universal_jar: project.shadowJar.archivePath.name,
