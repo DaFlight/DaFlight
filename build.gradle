@@ -1,57 +1,51 @@
 buildscript {
     repositories {
+        maven { url "http://files.minecraftforge.net/maven" }
+        maven { url "http://repo.spongepowered.org/maven" }
+        maven { url "https://plugins.gradle.org/m2/" }
         jcenter()
-        maven {
-            name 'forge'
-            url 'http://files.minecraftforge.net/maven'
-        }
-        maven {
-            name 'm2'
-            url 'https://plugins.gradle.org/m2'
-        }
-        maven {
-            name 'sponge'
-            url 'https://repo.spongepowered.org/maven'
-        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
-        classpath 'gradle.plugin.mnm.mods.kappa:ap-ide:1.0.5'
+        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
+        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.2"
     }
 }
-apply plugin: 'net.minecraftforge.gradle.tweaker-client'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'mnm.gradle.ap-ide'
 
-minecraft {
-    version = "1.12.2"
-    mappings = "snapshot_20170919"
-    runDir = 'run'
-    tweakClass = 'me.dags.daflight.launch.DaFlightTweaker'
-}
+apply plugin: "java"
+apply plugin: "net.minecraftforge.gradle.tweaker-client"
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "org.spongepowered.mixin"
 
-group = 'me.dags'
-version = "5.2.2-mc$minecraft.version"
-
+group = "me.dags"
+version = "5.2.3-1.12.2"
 targetCompatibility = sourceCompatibility = "1.8"
 
+minecraft {
+    runDir = "run"
+    version = "1.12.2"
+    mappings = "snapshot_20170919"
+    tweakClass = "me.dags.daflight.launch.DaFlightTweaker"
+    makeObfSourceJar = false
+}
+
 repositories {
-    maven {
-        name 'sponge'
-        url 'https://repo.spongepowered.org/maven'
-    }
+    mavenCentral()
+    maven { url "https://libraries.minecraft.net/" }
+    maven { url "https://repo.spongepowered.org/maven/" }
 }
 
 dependencies {
-    compile('org.spongepowered:mixin:0.7.5-SNAPSHOT') {
-        transitive = false
-    }
-    factory 'org.spongepowered:mixin:0.7.5-SNAPSHOT'
+    implementation ("org.spongepowered:mixin:0.7.11-SNAPSHOT") { transitive = false }
+    compileOnly ("net.minecraft:launchwrapper:1.12") { transitive = false }
 }
 
-processor {
-    options.reobfSrgFile = project.tasks.genSrgs.mcpToSrg.path
+mixin {
+    defaultObfuscationEnv notch
+}
+
+reobf {
+    shadowJar{}
 }
 
 sourceSets {
@@ -60,62 +54,43 @@ sourceSets {
     }
 }
 
-mixin {
-//    add sourceSets.main, 'mixin.daflight.refmap.json'
-    defaultObfuscationEnv notch
-}
-
-def commonManifest = [
-        'Built-By'              : 'ForgeGradle',
-        'Implementation-Vendor' : 'dags',
-        'Implementation-Title'  : project.name,
-        'Implementation-Version': project.version,
-        'TweakClass'            : 'me.dags.daflight.launch.DaFlightLoaderTweaker',
-        'TweakName'             : project.name,
-        'TweakVersion'          : project.version,
-        'TweakAuthor'           : 'dags'
-]
-
 jar {
-    classifier 'minimal'
     afterEvaluate {
         manifest {
-            attributes commonManifest
+            attributes (
+                    'Built-By'              : 'ForgeGradle',
+                    'Implementation-Vendor' : 'dags',
+                    'Implementation-Title'  : project.name,
+                    'Implementation-Version': project.version,
+                    'TweakClass'            : 'me.dags.daflight.launch.DaFlightLoaderTweaker',
+                    'TweakName'             : project.name,
+                    'TweakVersion'          : project.version,
+                    'TweakAuthor'           : 'dags'
+            )
         }
     }
 }
 
-task allJar(type: Jar) {
-
-    from sourceSets.main.output
-    from configurations.compile.collect { zipTree(it) }
-    exclude 'META-INF/**'
-    exclude 'dummyThing'
-
-    manifest {
-        attributes commonManifest
-    }
+shadowJar {
+    dependsOn jar
+    exclude "dummyThing"
+    classifier = "standalone"
 }
 
-artifacts.archives allJar
-reobf {
-    allJar {}
-}
+build.dependsOn reobfShadowJar
 
 import net.minecraftforge.gradle.tasks.EtagDownloadTask
 
 task processJson(type: Copy) {
-
     def things = [
             version      : project.version,
             project      : project.name,
             timestamp    : new Date().format("yyyy'-'MM'-'dd'T'hh':'mm':'ssZZZZ"),
             mcversion    : project.minecraft.version,
             artifact     : "$project.group:$project.name:$version",
-            universal_jar: project.allJar.archivePath.name,
+            universal_jar: project.shadowJar.archivePath.name,
             tweak_class  : project.minecraft.tweakClass
     ]
-
     from('install_profile.json') {
         filter { line ->
             def replaces = (line =~ /@(.+?)@/)
@@ -142,13 +117,12 @@ task downloadInstaller(type: EtagDownloadTask) {
 }
 
 task installer(type: Zip) {
-    from allJar
+    from shadowJar
     from processJson
     from(zipTree(downloadInstaller.file)) {
         exclude '*.json'
         exclude '*.png'
     }
-
     baseName = project.name
     classifier = 'installer'
     extension = 'jar'
