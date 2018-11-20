@@ -14,7 +14,6 @@ hs_err_pid*
 .gradle/
 build/
 run/
-gradlew
 *.launch
 
 # eclipse
@@ -26,4 +25,3 @@ bin/
 .apt_generated/
 .idea/
 DaFlightManager/
-*.bat
