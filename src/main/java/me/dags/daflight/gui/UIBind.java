@@ -1,8 +1,7 @@
 package me.dags.daflight.gui;
 
 import me.dags.daflight.MCHooks;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import net.minecraft.client.util.InputMappings;
 
 /**
  * @author dags_ <dags@dags.me>
@@ -105,11 +104,11 @@ public class UIBind implements UIElement<String> {
     public void mouseClick(int mouseX, int mouseY, int button) {
         if (active) {
             if (mouseOver) {
-                value = Mouse.getButtonName(button);
+                value = InputMappings.getInputByCode(button, 0).getName();
             }
             active = false;
         } else if (mouseOver) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && defaultVal.length() > 0) {
+            if (MCHooks.Input.isShiftDown() && defaultVal.length() > 0) {
                 setValue(defaultVal);
             } else {
                 active = true;
@@ -130,10 +129,10 @@ public class UIBind implements UIElement<String> {
     @Override
     public void keyType(char character, int id) {
         if (active) {
-            if (id == Keyboard.KEY_BACK) {
+            if (id == MCHooks.Input.escape()) {
+                value = InputMappings.getInputByCode(id, 0).getName();
+            } else if (id == MCHooks.Input.backspace()) {
                 value = "";
-            } else if (id != Keyboard.KEY_ESCAPE) {
-                value = Keyboard.getKeyName(id);
             }
             active = false;
         }

@@ -4,35 +4,35 @@ package me.dags.daflight.gui;
  * @author dags_ <dags@dags.me>
  */
 
-public interface UIElement<T> {
+interface UIElement<T> {
 
-    public static final int BACKGROUND_COLOR = 0x99999999;
-    public static final int TEXT_COLOR = 0xFFFFFFFF;
-    public static final int ACTIVE_COLOR = 0xFFFFFFB3;
+    int BACKGROUND_COLOR = 0x99999999;
+    int TEXT_COLOR = 0xFFFFFFFF;
+    int ACTIVE_COLOR = 0xFFFFFFB3;
 
-    public UIElement top(int y);
+    UIElement top(int y);
 
-    public UIElement left(int x);
+    UIElement left(int x);
 
-    public UIElement setValue(T value);
+    UIElement setValue(T value);
 
-    public UIElement setDisplay(String display);
+    UIElement setDisplay(String display);
 
-    public UIElement setDefault(T value);
+    UIElement setDefault(T value);
 
-    public String getDisplayString();
+    String getDisplayString();
 
-    public boolean active();
+    boolean active();
 
-    public int getHeight();
+    int getHeight();
 
-    public void draw(int mouseX, int mouseY);
+    void draw(int mouseX, int mouseY);
 
-    public void mouseClick(int mouseX, int mouseY, int button);
+    void mouseClick(int mouseX, int mouseY, int button);
 
-    public void mouseRelease();
+    void mouseRelease();
 
-    public void keyType(char character, int id);
+    void keyType(char character, int id);
 
-    public T get();
+    T get();
 }

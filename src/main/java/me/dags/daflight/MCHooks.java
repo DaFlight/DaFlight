@@ -6,12 +6,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
 import java.io.File;
@@ -21,10 +21,20 @@ import java.io.File;
  */
 public class MCHooks {
 
+    private static final ResourceLocation REGISTER = new ResourceLocation("daflight", "REGISTER");
+
     public static class Game {
 
+        public static Minecraft getInstance() {
+            return Minecraft.getInstance();
+        }
+
         public static File gameDir() {
-            return Minecraft.getMinecraft().mcDataDir;
+            return Game.getInstance().gameDir;
+        }
+
+        public static boolean isSinglePlayer() {
+            return Game.getInstance().isSingleplayer();
         }
 
         public static boolean inGame() {
@@ -32,26 +42,26 @@ public class MCHooks {
         }
 
         public static boolean inGameHasFocus() {
-            return Minecraft.getMinecraft().inGameHasFocus;
+            return Game.getInstance().isGameFocused();
         }
 
         public static boolean displayDebugInfo() {
-            return Minecraft.getMinecraft().gameSettings.showDebugInfo;
+            return Game.getInstance().gameSettings.showDebugInfo;
         }
     }
 
     public static class GUI {
 
         public static void displayScreen(GuiScreen screen) {
-            Minecraft.getMinecraft().displayGuiScreen(screen);
+            Game.getInstance().displayGuiScreen(screen);
         }
 
         public static int displayWidth() {
-            return new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth();
+            return Game.getInstance().mainWindow.getScaledWidth();
         }
 
         public static int stringWidth(String in) {
-            return Minecraft.getMinecraft().fontRenderer.getStringWidth(in);
+            return Game.getInstance().fontRenderer.getStringWidth(in);
         }
 
         public static void drawRectangle(int left, int top, int right, int bottom, int color) {
@@ -64,10 +74,61 @@ public class MCHooks {
 
         public static void drawString(String string, int x, int y, int colour, boolean withShadow) {
             if (withShadow) {
-                Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(string, x, y, colour);
+                Game.getInstance().fontRenderer.drawStringWithShadow(string, x, y, colour);
             } else {
-                Minecraft.getMinecraft().fontRenderer.drawString(string, x, y, colour);
+                Game.getInstance().fontRenderer.drawString(string, x, y, colour);
             }
+        }
+
+        public static String inputName(int id) {
+            return InputMappings.getInputByCode(id, 0).getName();
+        }
+
+        public static int inputId(String name) {
+            return InputMappings.getInputByName(name).getKeyCode();
+        }
+    }
+
+    public static class Input {
+
+        public static int escape() {
+            return inputId("key.keyboard.escape");
+        }
+
+        public static int backspace() {
+            return inputId("key.keyboard.backspace");
+        }
+
+        public static int leftShift() {
+            return inputId("key.keyboard.left.shift");
+        }
+
+        public static int leftControl() {
+            return inputId("key.keyboard.left.control");
+        }
+
+        public static boolean isShiftDown() {
+            return isDown(leftShift());
+        }
+
+        public static boolean isControlDown() {
+            return isDown(leftControl());
+        }
+
+        public static boolean isDown(String name) {
+            return isDown(inputId(name));
+        }
+
+        public static boolean isDown(int id) {
+            return InputMappings.isKeyDown(id);
+        }
+
+        public static String inputName(int id) {
+            return InputMappings.getInputByCode(id, 0).getName();
+        }
+
+        public static int inputId(String name) {
+            return InputMappings.getInputByName(name).getKeyCode();
         }
     }
 
@@ -86,7 +147,7 @@ public class MCHooks {
         }
 
         public static boolean allowFlying() {
-            return present() && (getPlayer().capabilities.allowFlying || Minecraft.getMinecraft().isSingleplayer());
+            return present() && (getPlayer().capabilities.allowFlying || Game.getInstance().isSingleplayer());
         }
 
         public static boolean isFlying() {
@@ -104,13 +165,12 @@ public class MCHooks {
         }
 
         public static void setInvincible(boolean state) {
-            if (Minecraft.getMinecraft().isSingleplayer() && !isInvulnerable()) {
-                MinecraftServer server = Minecraft.getMinecraft().getIntegratedServer();
+            if (Game.getInstance().isSingleplayer() && !isInvulnerable()) {
+                MinecraftServer server = Game.getInstance().getIntegratedServer();
                 if (server != null) {
-                    Entity entity = server.getEntityFromUuid(getPlayer().getUniqueID());
-                    if (entity != null) {
-                        EntityPlayerMP playerMP = (EntityPlayerMP) entity;
-                        playerMP.capabilities.disableDamage = state;
+                    EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(getPlayer().getUniqueID());
+                    if (player != null) {
+                        player.capabilities.disableDamage = state;
                     }
                 }
             }
@@ -134,7 +194,7 @@ public class MCHooks {
         }
 
         private static EntityPlayerSP getPlayer() {
-            return Minecraft.getMinecraft().player;
+            return Game.getInstance().player;
         }
     }
 
@@ -144,12 +204,14 @@ public class MCHooks {
         public static void sendChannels(String channels) {
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeBytes(channels.getBytes(Charsets.UTF_8));
-            CPacketCustomPayload payload = new CPacketCustomPayload("REGISTER", buffer);
+            CPacketCustomPayload payload = new CPacketCustomPayload(REGISTER, buffer);
             sendPayload(payload);
         }
 
         public static void sendMessageBytes(String channel, byte[] data) {
-            CPacketCustomPayload payload = new CPacketCustomPayload(channel, new PacketBuffer(Unpooled.wrappedBuffer(data)));
+            ResourceLocation chan = new ResourceLocation("daflight", channel);
+            PacketBuffer buf = new PacketBuffer(Unpooled.wrappedBuffer(data));
+            CPacketCustomPayload payload = new CPacketCustomPayload(chan, buf);
             sendPayload(payload);
         }
 
@@ -163,11 +225,11 @@ public class MCHooks {
     public static class Profiler {
 
         public static void startSection(String section) {
-            Minecraft.getMinecraft().mcProfiler.startSection(section);
+            Game.getInstance().profiler.startSection(section);
         }
 
         public static void endSection() {
-            Minecraft.getMinecraft().mcProfiler.endSection();
+            Game.getInstance().profiler.endSection();
         }
     }
 }

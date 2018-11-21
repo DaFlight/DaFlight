@@ -3,6 +3,7 @@ buildscript {
         maven { url "http://files.minecraftforge.net/maven" }
         maven { url "http://repo.spongepowered.org/maven" }
         maven { url "https://plugins.gradle.org/m2/" }
+        maven { url 'https://www.dimdev.org/maven/' }
         jcenter()
     }
     dependencies {
@@ -18,13 +19,13 @@ apply plugin: "org.spongepowered.mixin"
 apply plugin: "java"
 
 group = "me.dags"
-version = "5.2.3-1.12.2"
+version = "5.3.0-1.13"
 targetCompatibility = sourceCompatibility = "1.8"
 
 minecraft {
     runDir = "run"
-    version = "1.12.2"
-    mappings = "snapshot_20170919"
+    version = "1.13"
+    mappings = "snapshot_20180908"
     tweakClass = "me.dags.daflight.launch.DaFlightTweaker"
     makeObfSourceJar = false
 }
@@ -79,56 +80,3 @@ shadowJar {
 }
 
 build.dependsOn reobfShadowJar
-
-import net.minecraftforge.gradle.tasks.EtagDownloadTask
-
-task processJson(type: Copy) {
-    def things = [
-            version      : project.version,
-            project      : project.name,
-            timestamp    : new Date().format("yyyy'-'MM'-'dd'T'hh':'mm':'ssZZZZ"),
-            mcversion    : project.minecraft.version,
-            artifact     : "$project.group:$project.name:$version",
-            universal_jar: project.shadowJar.archivePath.name,
-            tweak_class  : project.minecraft.tweakClass
-    ]
-    from("install_profile.json") {
-        filter { line ->
-            def replaces = (line =~ /@(.+?)@/)
-            replaces.each {
-                def key = it[0]
-                def val = things[it[1]] ?: "null"
-                line = line.replace(it[0], things[it[1]] ?: "null")
-            }
-            line
-        }
-    }
-    from(".") {
-        include "daflight-logo.png"
-        rename { "daflight-installer-logo.png" }
-    }
-    into "build/distributions/packaging/resources"
-    outputs.upToDateWhen { false }
-}
-
-task downloadInstaller(type: EtagDownloadTask) {
-    url = "http://files.minecraftforge.net/maven/net/minecraftforge/installer/1.5/installer-1.5-shrunk.jar"
-    dieWithError = true
-    file = "build/distributions/packaging/installer-fresh.jar"
-}
-
-task installer(type: Zip) {
-    from shadowJar
-    from processJson
-    from(zipTree(downloadInstaller.file)) {
-        exclude "*.json"
-        exclude "*.png"
-    }
-    baseName = project.name
-    classifier = "installer"
-    extension = "jar"
-    destinationDir = file("build/distributions")
-    duplicatesStrategy = "EXCLUDE"
-    outputs.upToDateWhen { false }
-    dependsOn downloadInstaller, build, processJson
-}

@@ -1,9 +1,7 @@
 package me.dags.daflight.gui;
 
-import me.dags.daflight.MCHooks;
-import org.lwjgl.input.Keyboard;
-
 import java.text.DecimalFormat;
+import me.dags.daflight.MCHooks;
 
 /**
  * @author dags_ <dags@dags.me>
@@ -118,7 +116,7 @@ public class UISlider implements UIElement<Float> {
 
     @Override
     public void mouseClick(int x, int y, int button) {
-        if (hovered && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+        if (hovered && MCHooks.Input.isShiftDown()) {
             setValue(defaultVal);
         } else {
             active = x >= sliderPos - sliderHalfWidth && x <= sliderPos + sliderHalfWidth && y >= top && y <= top + height;

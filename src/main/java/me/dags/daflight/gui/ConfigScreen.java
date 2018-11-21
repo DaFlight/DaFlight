@@ -1,17 +1,15 @@
 package me.dags.daflight.gui;
 
-import me.dags.daflight.DaFlight;
-import me.dags.daflight.MCHooks;
-import me.dags.daflight.util.Config;
-import me.dags.daflight.util.ConfigGlobal;
-import net.minecraft.client.gui.GuiScreen;
-import org.lwjgl.input.Keyboard;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import me.dags.daflight.DaFlight;
+import me.dags.daflight.MCHooks;
+import me.dags.daflight.util.Config;
+import me.dags.daflight.util.ConfigGlobal;
+import net.minecraft.client.gui.GuiScreen;
 
 /**
  * @author dags_ <dags@dags.me>
@@ -90,7 +88,7 @@ public class ConfigScreen extends GuiScreen {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
         int top = 5;
         for (UIElement s : elements) {
@@ -99,14 +97,14 @@ public class ConfigScreen extends GuiScreen {
         }
     }
 
-    @Override
+//    @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         for (UIElement s : elements) {
             s.mouseClick(mouseX, mouseY, mouseButton);
         }
     }
 
-    @Override
+//    @Override
     public void mouseReleased(int mouseX, int mouseY, int state) {
         for (UIElement s : elements) {
             s.mouseRelease();
@@ -114,18 +112,19 @@ public class ConfigScreen extends GuiScreen {
     }
 
     @Override
-    public void keyTyped(char typedChar, int keyCode) throws IOException {
+    public boolean keyPressed(int typedChar, int keyCode, int mod) {
         boolean activeAndEsc = false;
         for (UIElement e : elements) {
-            activeAndEsc = activeAndEsc || e.active() && keyCode == Keyboard.KEY_ESCAPE;
-            e.keyType(typedChar, keyCode);
+            activeAndEsc = activeAndEsc || e.active() && keyCode == MCHooks.Input.escape();
+            e.keyType((char) typedChar, keyCode);
         }
-        if (keyCode == Keyboard.KEY_ESCAPE && !activeAndEsc) {
+        if (keyCode == MCHooks.Input.escape() && !activeAndEsc) {
             updateConfig();
             configGlobal.save();
             DaFlight.instance().updateConfig();
             MCHooks.GUI.displayScreen(null);
         }
+        return true;
     }
 
     private void updateConfig() {
