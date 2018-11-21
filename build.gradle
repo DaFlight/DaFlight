@@ -75,6 +75,7 @@ jar {
 
 shadowJar {
     dependsOn jar
+    mergeServiceFiles()
     exclude "dummyThing"
     classifier = "standalone"
 }
