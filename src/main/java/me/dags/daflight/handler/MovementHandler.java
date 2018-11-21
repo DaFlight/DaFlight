@@ -45,14 +45,6 @@ public class MovementHandler {
         maxWalkSpeed = DaFlight.instance().isSinglePlayer() ? 100000F : 1F;
     }
 
-    public boolean flying() {
-        return flying;
-    }
-
-    public boolean sprinting() {
-        return sprinting;
-    }
-
     public boolean disableFov() {
         return DaFlight.instance().config().disableFov && flying;
     }
@@ -64,7 +56,7 @@ public class MovementHandler {
     public float jump(float normal) {
         if (sprinting && !daFlight.config().disabled) {
             float boost = sprintBoosting ? daFlight.config().sprintBoost : 1F;
-            return normal * clamp(daFlight.config().sprintSpeed * daFlight.config().jumpModifier * boost, maxWalkSpeed * 5);
+            return normal * Math.min(daFlight.config().sprintSpeed * daFlight.config().jumpModifier * boost, maxWalkSpeed * 5);
         }
         return normal;
     }
@@ -100,25 +92,25 @@ public class MovementHandler {
         float boost = flyBoosting ? daFlight.config().flyBoost : 1F;
 
         if (moveForward != 0) {
-            x += dx * moveForward * clamp(daFlight.config().flySpeed * boost, maxFlySpeed);
-            z += dz * moveForward * clamp(daFlight.config().flySpeed * boost, maxFlySpeed);
+            x += dx * moveForward * Math.min(daFlight.config().flySpeed * boost, maxFlySpeed);
+            z += dz * moveForward * Math.min(daFlight.config().flySpeed * boost, maxFlySpeed);
         }
         if (moveStrafe != 0) {
-            x += dz * moveStrafe * clamp(daFlight.config().flySpeed * daFlight.config().strafeModifier * boost, maxFlySpeed);
-            z += dx * -moveStrafe * clamp(daFlight.config().flySpeed * daFlight.config().strafeModifier * boost, maxFlySpeed);
+            x += dz * moveStrafe * Math.min(daFlight.config().flySpeed * daFlight.config().strafeModifier * boost, maxFlySpeed);
+            z += dx * -moveStrafe * Math.min(daFlight.config().flySpeed * daFlight.config().strafeModifier * boost, maxFlySpeed);
         }
         if (moveForward != 0 && moveStrafe != 0) {
             x *= SCALE_FACTOR;
             z *= SCALE_FACTOR;
         }
         if (daFlight.config().flight3D && moveForward != 0) {
-            y += -rotation.getPitch() * moveForward * (0.9F / 50F) * daFlight.config().verticalModifier * clamp(daFlight.config().flySpeed * boost, maxFlySpeed);
+            y += -rotation.getPitch() * moveForward * (0.9F / 50F) * daFlight.config().verticalModifier * Math.min(daFlight.config().flySpeed * boost, maxFlySpeed);
         }
         if (DaFlight.instance().inputHandler().getFlyUpBind().keyHeld() && MCHooks.Game.inGameHasFocus()) {
-            y += clamp(daFlight.config().flySpeed * boost * daFlight.config().verticalModifier, maxFlySpeed);
+            y += Math.min(daFlight.config().flySpeed * boost * daFlight.config().verticalModifier, maxFlySpeed);
         }
         if (DaFlight.instance().inputHandler().getFlyDownBind().keyHeld() && MCHooks.Game.inGameHasFocus()) {
-            y -= clamp(daFlight.config().flySpeed * boost * daFlight.config().verticalModifier, maxFlySpeed);
+            y -= Math.min(daFlight.config().flySpeed * boost * daFlight.config().verticalModifier, maxFlySpeed);
         }
         direction.update(x, y, z);
     }
@@ -133,21 +125,17 @@ public class MovementHandler {
         float boost = sprintBoosting ? daFlight.config().sprintBoost : 1F;
 
         if (moveForward != 0) {
-            x += dx * moveForward * clamp(daFlight.config().sprintSpeed * boost, maxWalkSpeed);
-            z += dz * moveForward * clamp(daFlight.config().sprintSpeed * boost, maxWalkSpeed);
+            x += dx * moveForward * Math.min(daFlight.config().sprintSpeed * boost, maxWalkSpeed);
+            z += dz * moveForward * Math.min(daFlight.config().sprintSpeed * boost, maxWalkSpeed);
         }
         if (moveStrafe != 0) {
-            x += dz * moveStrafe * clamp(daFlight.config().sprintSpeed * daFlight.config().strafeModifier * boost, maxWalkSpeed);
-            z += dx * -moveStrafe * clamp(daFlight.config().sprintSpeed * daFlight.config().strafeModifier * boost, maxWalkSpeed);
+            x += dz * moveStrafe * Math.min(daFlight.config().sprintSpeed * daFlight.config().strafeModifier * boost, maxWalkSpeed);
+            z += dx * -moveStrafe * Math.min(daFlight.config().sprintSpeed * daFlight.config().strafeModifier * boost, maxWalkSpeed);
         }
         if (moveForward != 0 && moveStrafe != 0) {
             x *= SCALE_FACTOR;
             z *= SCALE_FACTOR;
         }
         direction.update(x, direction.getY(), z);
-    }
-
-    private static float clamp(float in, float max) {
-        return in < max ? in : max;
     }
 }
