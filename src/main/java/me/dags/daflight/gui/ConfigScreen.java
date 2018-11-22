@@ -88,7 +88,7 @@ public class ConfigScreen extends GuiScreen {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
         int top = 5;
         for (UIElement s : elements) {

@@ -1,12 +1,12 @@
 buildscript {
     repositories {
-        maven { url "http://files.minecraftforge.net/maven" }
-        maven { url "http://repo.spongepowered.org/maven" }
-        maven { url "https://plugins.gradle.org/m2/" }
         jcenter()
+        maven { url "https://www.dimdev.org/maven/" }
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "http://repo.spongepowered.org/maven" }
     }
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath "org.dimdev:ForgeGradle:2.3-SNAPSHOT"
         classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
         classpath "com.github.jengelman.gradle.plugins:shadow:4.0.2"
     }
@@ -19,26 +19,33 @@ apply plugin: "java"
 
 group = "me.dags"
 version = "5.3.0-1.13"
+archivesBaseName = "DaFlight"
 targetCompatibility = sourceCompatibility = "1.8"
 
 minecraft {
-    runDir = "run"
     version = "1.13"
-    mappings = "snapshot_20180908"
+    mappings = "snapshot_5"
+    runDir = "run"
     tweakClass = "me.dags.daflight.launch.DaFlightTweaker"
     makeObfSourceJar = false
 }
 
+configurations {
+    shade
+    implementation.extendsFrom shade
+}
+
 repositories {
     mavenCentral()
-    maven { url 'https://www.dimdev.org/maven/' } // borrow mcp mappings from here
-    maven { url "https://libraries.minecraft.net/" }
+    maven { url "https://www.dimdev.org/maven/" }
     maven { url "https://repo.spongepowered.org/maven/" }
 }
 
 dependencies {
-    implementation ("org.spongepowered:mixin:0.7.11-SNAPSHOT") { transitive = false }
-    compileOnly ("net.minecraft:launchwrapper:1.12") { transitive = false }
+    shade("org.spongepowered:mixin:0.7.11-SNAPSHOT") { transitive = false }
+    implementation("net.minecraft:launchwrapper:1.12") { transitive = false }
+    runtime("org.spongepowered:mixin:0.7.11-SNAPSHOT") { transitive = false }
+    runtime("net.minecraft:launchwrapper:1.12") { transitive = false }
 }
 
 mixin {
@@ -47,27 +54,23 @@ mixin {
 }
 
 reobf {
-    shadowJar{}
-}
-
-sourceSets {
-    main {
-        compileClasspath += main.compileClasspath
-    }
+    jar {}
+    shadowJar {}
 }
 
 jar {
+    classifier = "min"
     afterEvaluate {
         manifest {
-            attributes (
-                    "Built-By"              : "ForgeGradle",
-                    "Implementation-Vendor" : "dags",
-                    "Implementation-Title"  : project.name,
+            attributes(
+                    "Built-By": "ForgeGradle",
+                    "Implementation-Vendor": "dags",
+                    "Implementation-Title": project.name,
                     "Implementation-Version": project.version,
-                    "TweakClass"            : "me.dags.daflight.launch.DaFlightLoaderTweaker",
-                    "TweakName"             : project.name,
-                    "TweakVersion"          : project.version,
-                    "TweakAuthor"           : "dags"
+                    "TweakClass": "me.dags.daflight.launch.DaFlightLoaderTweaker",
+                    "TweakName": project.name,
+                    "TweakVersion": project.version,
+                    "TweakAuthor": "dags"
             )
         }
     }
@@ -75,9 +78,10 @@ jar {
 
 shadowJar {
     dependsOn jar
+    classifier = ""
+    exclude "dummyThing", "LICENSE.txt"
     mergeServiceFiles()
-    exclude "dummyThing"
-    classifier = "standalone"
+    configurations = [project.configurations.shade]
 }
 
 build.dependsOn reobfShadowJar

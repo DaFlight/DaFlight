@@ -26,7 +26,7 @@ public class MCHooks {
     public static class Game {
 
         public static Minecraft getInstance() {
-            return Minecraft.getInstance();
+            return Minecraft.getMinecraft();
         }
 
         public static File gameDir() {
@@ -42,7 +42,7 @@ public class MCHooks {
         }
 
         public static boolean inGameHasFocus() {
-            return Game.getInstance().isGameFocused();
+            return Game.getInstance().isWindowFocused();
         }
 
         public static boolean displayDebugInfo() {
@@ -76,7 +76,7 @@ public class MCHooks {
             if (withShadow) {
                 Game.getInstance().fontRenderer.drawStringWithShadow(string, x, y, colour);
             } else {
-                Game.getInstance().fontRenderer.drawString(string, x, y, colour);
+                Game.getInstance().fontRenderer.func_211126_b(string, x, y, colour);
             }
         }
 

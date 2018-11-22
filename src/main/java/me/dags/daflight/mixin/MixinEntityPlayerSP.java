@@ -28,7 +28,7 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer {
     @Override
     public void preparePlayerToSpawn() {
         super.preparePlayerToSpawn();
-        DaFlight.instance().setSinglePlayer(Minecraft.getInstance().isSingleplayer());
+        DaFlight.instance().setSinglePlayer(MCHooks.Game.isSinglePlayer());
         DaFlight.instance().setServerName(serverName());
         DaFlight.instance().updateConfig();
         DaFlight.instance().movementHandler().reset();
