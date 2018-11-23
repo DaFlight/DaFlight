@@ -25,16 +25,20 @@ public class Bind {
         return this;
     }
 
-    public String getBindName() {
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
         return bindName;
+    }
+
+    public String getDisplayName() {
+        return MCHooks.Input.display(bindName);
     }
 
     public boolean isToggle() {
         return toggle;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public boolean active() {
@@ -52,8 +56,8 @@ public class Bind {
         return MCHooks.Input.isDown(getId());
     }
 
-    public Bind setBind(String button) {
-        setId(MCHooks.Input.inputId(button));
+    public Bind setBind(String name) {
+        setId(MCHooks.Input.id(name));
         return this;
     }
 

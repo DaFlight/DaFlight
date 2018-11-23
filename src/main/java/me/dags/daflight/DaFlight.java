@@ -1,6 +1,6 @@
 package me.dags.daflight;
 
-import java.io.File;
+import me.dags.daflight.gui.ConfigScreen;
 import me.dags.daflight.handler.InputHandler;
 import me.dags.daflight.handler.MessageHandler;
 import me.dags.daflight.handler.MovementHandler;
@@ -8,6 +8,8 @@ import me.dags.daflight.handler.OverlayHandler;
 import me.dags.daflight.util.Config;
 import me.dags.daflight.util.ConfigGlobal;
 import me.dags.daflight.util.FileUtil;
+
+import java.io.File;
 
 /**
  * @author dags <dags@dags.me>
@@ -89,7 +91,7 @@ public class DaFlight {
     }
 
     public void displayConfig() {
-//        MCHooks.GUI.displayScreen(new ConfigScreen(configGlobal));
+        MCHooks.GUI.displayScreen(new ConfigScreen(configGlobal));
     }
 
     public static DaFlight instance() {

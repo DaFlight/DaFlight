@@ -10,15 +10,12 @@ import me.dags.daflight.util.Vector3d;
  */
 public class MovementHandler {
 
-    private static final double SCALE_FACTOR = 1 / Math.sqrt(2);
-
     private final DaFlight daFlight;
 
     private float moveForward = 0F;
     private float moveStrafe = 0F;
-    private float maxFlySpeed = 10F;
-    private float maxWalkSpeed = 10F;
-
+    float maxFlySpeed = 10F;
+    float maxWalkSpeed = 10F;
     boolean flying = false;
     boolean sprinting = false;
     boolean flyBoosting = false;
@@ -64,7 +61,8 @@ public class MovementHandler {
     public float jump(float normal) {
         if (sprinting && !daFlight.config().disabled) {
             float boost = sprintBoosting ? daFlight.config().sprintBoost : 1F;
-            return normal * clamp(daFlight.config().sprintSpeed * daFlight.config().jumpModifier * boost, maxWalkSpeed * 5);
+            float speed = Math.min(daFlight.config().sprintSpeed * daFlight.config().jumpModifier * boost, maxWalkSpeed * 5);
+            return normal * speed;
         }
         return normal;
     }
@@ -74,80 +72,52 @@ public class MovementHandler {
         this.moveStrafe = moveStrafe;
     }
 
-    boolean flyBoosting() {
-        return flyBoosting;
+    private void moveFlying(Vector3d heading, Rotation rotation) {
+        double strafeMod = daFlight.config().strafeModifier;
+        double ascendMod = daFlight.config().verticalModifier;
+        double boost = flyBoosting ? daFlight.config().flyBoost : 1D;
+        double speed = Math.min(daFlight.config().flySpeed * boost, maxFlySpeed);
+
+        double pitch = Math.toRadians(rotation.getPitch());
+        double yaw = Math.toRadians(rotation.getYaw());
+        double dx = -Math.sin(yaw);
+        double dz = Math.cos(yaw);
+
+        heading.set(dx * moveForward, 0, dz * moveForward);
+        heading.add(dz * moveStrafe * strafeMod, 0, -dx * moveStrafe * strafeMod);
+
+        if (MCHooks.Game.inGameHasFocus()) {
+            if (DaFlight.instance().inputHandler().flyUpBind.keyHeld()) {
+                heading.add(0, ascendMod, 0);
+            }
+
+            if (DaFlight.instance().inputHandler().flyDownBind.keyHeld()) {
+                heading.add(0, -ascendMod, 0);
+            }
+        }
+
+        if (daFlight.config().flight3D) {
+            double vy = -Math.sin(pitch);
+            double hy = Math.abs(Math.cos(pitch));
+            heading.mult(hy, 1, hy);
+            heading.add(0, vy * moveForward * ascendMod, 0);
+        }
+
+        heading.norm();
+        heading.mult(speed);
     }
 
-    boolean sprintBoosting() {
-        return sprintBoosting;
-    }
-
-    void setMaxFlySpeed(float maxFlySpeed) {
-        this.maxFlySpeed = maxFlySpeed;
-    }
-
-    void setMaxWalkSpeed(float maxWalkSpeed) {
-        this.maxWalkSpeed = maxWalkSpeed;
-    }
-
-    private void moveFlying(Vector3d direction, Rotation rotation) {
-        double x = 0;
-        double y = 0;
-        double z = 0;
-        double rads = Math.toRadians(rotation.getYaw());
-        double dx = -Math.sin(rads);
-        double dz = Math.cos(rads);
-        float boost = flyBoosting ? daFlight.config().flyBoost : 1F;
-
-        if (moveForward != 0) {
-            x += dx * moveForward * clamp(daFlight.config().flySpeed * boost, maxFlySpeed);
-            z += dz * moveForward * clamp(daFlight.config().flySpeed * boost, maxFlySpeed);
-        }
-        if (moveStrafe != 0) {
-            x += dz * moveStrafe * clamp(daFlight.config().flySpeed * daFlight.config().strafeModifier * boost, maxFlySpeed);
-            z += dx * -moveStrafe * clamp(daFlight.config().flySpeed * daFlight.config().strafeModifier * boost, maxFlySpeed);
-        }
-        if (moveForward != 0 && moveStrafe != 0) {
-            x *= SCALE_FACTOR;
-            z *= SCALE_FACTOR;
-        }
-        if (daFlight.config().flight3D && moveForward != 0) {
-            y += -rotation.getPitch() * moveForward * (0.9F / 50F) * daFlight.config().verticalModifier * clamp(daFlight.config().flySpeed * boost, maxFlySpeed);
-        }
-        if (DaFlight.instance().inputHandler().getFlyUpBind().keyHeld() && MCHooks.Game.inGameHasFocus()) {
-            y += clamp(daFlight.config().flySpeed * boost * daFlight.config().verticalModifier, maxFlySpeed);
-        }
-        if (DaFlight.instance().inputHandler().getFlyDownBind().keyHeld() && MCHooks.Game.inGameHasFocus()) {
-            y -= clamp(daFlight.config().flySpeed * boost * daFlight.config().verticalModifier, maxFlySpeed);
-        }
-        direction.update(x, y, z);
-    }
-
-    private void moveSprinting(Vector3d direction, Rotation rotation) {
-        double x = direction.getX();
-        double z = direction.getZ();
+    private void moveSprinting(Vector3d heading, Rotation rotation) {
+        double strafeMod = daFlight.config().strafeModifier;
+        double boost = sprintBoosting ? daFlight.config().sprintBoost : 1F;
+        double speed = Math.min(daFlight.config().sprintSpeed * boost, maxWalkSpeed);
 
         double rads = Math.toRadians(rotation.getYaw());
         double dx = -Math.sin(rads);
         double dz = Math.cos(rads);
-        float boost = sprintBoosting ? daFlight.config().sprintBoost : 1F;
 
-        if (moveForward != 0) {
-            x += dx * moveForward * clamp(daFlight.config().sprintSpeed * boost, maxWalkSpeed);
-            z += dz * moveForward * clamp(daFlight.config().sprintSpeed * boost, maxWalkSpeed);
-        }
-        if (moveStrafe != 0) {
-            x += dz * moveStrafe * clamp(daFlight.config().sprintSpeed * daFlight.config().strafeModifier * boost, maxWalkSpeed);
-            z += dx * -moveStrafe * clamp(daFlight.config().sprintSpeed * daFlight.config().strafeModifier * boost, maxWalkSpeed);
-        }
-        if (moveForward != 0 && moveStrafe != 0) {
-            x *= SCALE_FACTOR;
-            z *= SCALE_FACTOR;
-        }
-        direction.update(x, direction.getY(), z);
-    }
-
-    private static float clamp(float in, float max) {
-        return in < max ? in : max;
+        heading.add(dx * moveForward, 0, dz * moveForward);
+        heading.add(dz * moveStrafe * strafeMod, 0, -dx * moveStrafe * strafeMod);
+        heading.mult(speed, 1, speed);
     }
 }

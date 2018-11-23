@@ -1,13 +1,13 @@
 package me.dags.daflight.gui;
 
 import me.dags.daflight.MCHooks;
-import net.minecraft.client.util.InputMappings;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author dags_ <dags@dags.me>
  */
 
-public class UIBind implements UIElement<String> {
+public class Binding implements Element<String> {
 
     protected int left = 0;
     protected int top = 0;
@@ -20,44 +20,44 @@ public class UIBind implements UIElement<String> {
     protected String value = "";
     protected String defaultVal = "";
 
-    protected UIToggle toggle;
+    protected Toggle toggle;
 
-    public UIBind(int width, int height) {
+    public Binding(int width, int height) {
         this.width = width;
         this.height = height;
     }
 
-    public UIBind attach(UIToggle toggle) {
+    public Binding attach(Toggle toggle) {
         this.toggle = toggle;
         return this;
     }
 
     @Override
-    public UIBind top(int y) {
+    public Binding top(int y) {
         top = y;
         return this;
     }
 
     @Override
-    public UIBind left(int x) {
+    public Binding left(int x) {
         left = x;
         return this;
     }
 
     @Override
-    public UIBind setValue(String value) {
+    public Binding setValue(String value) {
         this.value = value;
         return this;
     }
 
     @Override
-    public UIBind setDisplay(String display) {
+    public Binding setDisplay(String display) {
         this.display = display;
         return this;
     }
 
     @Override
-    public UIElement setDefault(String value) {
+    public Element setDefault(String value) {
         defaultVal = value;
         return this;
     }
@@ -72,7 +72,10 @@ public class UIBind implements UIElement<String> {
     }
 
     public String getText() {
-        return active ? display + ":" : display + ": " + value;
+        if (active) {
+            return display + ":";
+        }
+        return display + ": " + StringUtils.capitalize(MCHooks.Input.display(value));
     }
 
     @Override
@@ -86,12 +89,12 @@ public class UIBind implements UIElement<String> {
     }
 
     @Override
-    public void draw(int mouseX, int mouseY) {
+    public void draw(double mouseX, double mouseY) {
         mouseOver = mouseX >= left && mouseX <= left + width && mouseY >= top && mouseY <= top + height;
         MCHooks.GUI.drawRectangle(left, top, left + width, top + height, BACKGROUND_COLOR);
         String str = getText();
         int textLeft = left + (width / 2) - (MCHooks.GUI.stringWidth(str) / 2);
-        MCHooks.GUI.drawString(str, textLeft, top, active ? ACTIVE_COLOR : TEXT_COLOR, true);
+        MCHooks.GUI.drawString(str, textLeft, top + 1, active ? ACTIVE_COLOR : TEXT_COLOR, true);
 
         if (toggle != null) {
             toggle.left(left + width + 2);
@@ -101,41 +104,44 @@ public class UIBind implements UIElement<String> {
     }
 
     @Override
-    public void mouseClick(int mouseX, int mouseY, int button) {
+    public boolean mouseClick(double mouseX, double mouseY, int button) {
         if (active) {
             if (mouseOver) {
-                value = InputMappings.getInputByCode(button, 0).getName();
+                value = MCHooks.Input.mouseName(button);
             }
             active = false;
+            return true;
         } else if (mouseOver) {
             if (MCHooks.Input.isShiftDown() && defaultVal.length() > 0) {
                 setValue(defaultVal);
             } else {
                 active = true;
             }
+            return true;
         }
-        if (toggle != null) {
-            toggle.mouseClick(mouseX, mouseY, button);
-        }
+        return toggle != null && toggle.mouseClick(mouseX, mouseY, button);
     }
 
     @Override
-    public void mouseRelease() {
-        if (toggle != null) {
-            toggle.mouseRelease();
-        }
+    public boolean mouseRelease() {
+        return toggle != null && toggle.mouseRelease();
     }
 
     @Override
-    public void keyType(char character, int id) {
+    public boolean keyType(char character, int id) {
         if (active) {
+            active = false;
+
             if (id == MCHooks.Input.escape()) {
-                value = InputMappings.getInputByCode(id, 0).getName();
+                return true;
             } else if (id == MCHooks.Input.backspace()) {
                 value = "";
+            } else {
+                value = MCHooks.Input.keyboardName(id);
             }
-            active = false;
+            return true;
         }
+        return false;
     }
 
     @Override

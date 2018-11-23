@@ -3,7 +3,6 @@ package me.dags.daflight.mixin;
 import com.mojang.authlib.GameProfile;
 import me.dags.daflight.DaFlight;
 import me.dags.daflight.MCHooks;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.ServerData;
@@ -16,8 +15,8 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(EntityPlayerSP.class)
 public class MixinEntityPlayerSP extends AbstractClientPlayer {
 
-    public MixinEntityPlayerSP(World worldIn) {
-        super(worldIn, new GameProfile(null, null));
+    public MixinEntityPlayerSP(World world, GameProfile profile) {
+        super(world, profile);
     }
 
     @Override

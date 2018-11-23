@@ -1,7 +1,7 @@
 package me.dags.daflight;
 
-import com.google.common.base.Charsets;
 import io.netty.buffer.Unpooled;
+import me.dags.daflight.handler.MessageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
@@ -20,8 +20,6 @@ import java.io.File;
  * @author dags <dags@dags.me>
  */
 public class MCHooks {
-
-    private static final ResourceLocation REGISTER = new ResourceLocation("daflight", "REGISTER");
 
     public static class Game {
 
@@ -42,7 +40,7 @@ public class MCHooks {
         }
 
         public static boolean inGameHasFocus() {
-            return Game.getInstance().isWindowFocused();
+            return Game.getInstance().isWindowFocused() && Game.getInstance().currentScreen == null;
         }
 
         public static boolean displayDebugInfo() {
@@ -79,56 +77,56 @@ public class MCHooks {
                 Game.getInstance().fontRenderer.func_211126_b(string, x, y, colour);
             }
         }
-
-        public static String inputName(int id) {
-            return InputMappings.getInputByCode(id, 0).getName();
-        }
-
-        public static int inputId(String name) {
-            return InputMappings.getInputByName(name).getKeyCode();
-        }
     }
 
     public static class Input {
 
+        public static int shift() {
+            return id("key.keyboard.left.shift");
+        }
+
         public static int escape() {
-            return inputId("key.keyboard.escape");
+            return id("key.keyboard.escape");
         }
 
         public static int backspace() {
-            return inputId("key.keyboard.backspace");
-        }
-
-        public static int leftShift() {
-            return inputId("key.keyboard.left.shift");
-        }
-
-        public static int leftControl() {
-            return inputId("key.keyboard.left.control");
+            return id("key.keyboard.backspace");
         }
 
         public static boolean isShiftDown() {
-            return isDown(leftShift());
-        }
-
-        public static boolean isControlDown() {
-            return isDown(leftControl());
-        }
-
-        public static boolean isDown(String name) {
-            return isDown(inputId(name));
+            return isDown(id("key.keyboard.left.shift"));
         }
 
         public static boolean isDown(int id) {
             return InputMappings.isKeyDown(id);
         }
 
-        public static String inputName(int id) {
-            return InputMappings.getInputByCode(id, 0).getName();
+        public static boolean isDown(String name) {
+            return InputMappings.isKeyDown(id(name));
         }
 
-        public static int inputId(String name) {
+        public static int id(String name) {
             return InputMappings.getInputByName(name).getKeyCode();
+        }
+
+        public static String display(String name) {
+            return InputMappings.getInputByName(name).getName();
+        }
+
+        public static String mouseName(int id) {
+            return mouse(id).getUnlocalizedName();
+        }
+
+        public static String keyboardName(int id) {
+            return keyboard(id).getUnlocalizedName();
+        }
+
+        public static InputMappings.Input mouse(int id) {
+            return InputMappings.Type.MOUSE.getOrMakeInput(id);
+        }
+
+        public static InputMappings.Input keyboard(int id) {
+            return InputMappings.Type.KEYSYM.getOrMakeInput(id);
         }
     }
 
@@ -201,17 +199,18 @@ public class MCHooks {
 
     public static class Network {
 
-        public static void sendChannels(String channels) {
+        public static void sendChannels(ResourceLocation... channels) {
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-            buffer.writeBytes(channels.getBytes(Charsets.UTF_8));
-            CPacketCustomPayload payload = new CPacketCustomPayload(REGISTER, buffer);
+            for (ResourceLocation channel : channels) {
+                buffer.writeResourceLocation(channel);
+            }
+            CPacketCustomPayload payload = new CPacketCustomPayload(MessageHandler.REGISTER, buffer);
             sendPayload(payload);
         }
 
-        public static void sendMessageBytes(String channel, byte[] data) {
-            ResourceLocation chan = new ResourceLocation("daflight", channel);
+        public static void sendMessageBytes(ResourceLocation channel, byte[] data) {
             PacketBuffer buf = new PacketBuffer(Unpooled.wrappedBuffer(data));
-            CPacketCustomPayload payload = new CPacketCustomPayload(chan, buf);
+            CPacketCustomPayload payload = new CPacketCustomPayload(channel, buf);
             sendPayload(payload);
         }
 

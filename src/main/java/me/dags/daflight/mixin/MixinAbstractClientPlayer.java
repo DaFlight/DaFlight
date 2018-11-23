@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(AbstractClientPlayer.class)
 public abstract class MixinAbstractClientPlayer extends EntityPlayer {
 
-    private final Vector3d direction = new Vector3d();
+    private final Vector3d heading = new Vector3d();
     private final Rotation rotation = new Rotation();
 
     public MixinAbstractClientPlayer(World worldIn) {
@@ -32,12 +32,12 @@ public abstract class MixinAbstractClientPlayer extends EntityPlayer {
         if (MCHooks.Player.isClientPlayer(this)) {
             MCHooks.Profiler.startSection("daflightMove");
             updateFlyStatus();
-            direction.update(x, y, z);
-            rotation.update(rotationPitch, rotationYaw);
+            heading.set(x, y, z);
+            rotation.set(rotationPitch, rotationYaw);
             DaFlight.instance().movementHandler().setMovementInput(MCHooks.Player.Input.forward(), MCHooks.Player.Input.strafe());
-            DaFlight.instance().movementHandler().applyMovement(direction, rotation);
+            DaFlight.instance().movementHandler().applyMovement(heading, rotation);
             MCHooks.Profiler.endSection();
-            super.move(type, direction.getX(), direction.getY(), direction.getZ());
+            super.move(type, heading.getX(), heading.getY(), heading.getZ());
         } else {
             super.move(type, x, y, z);
         }

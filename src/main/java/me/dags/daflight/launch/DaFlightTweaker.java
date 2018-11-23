@@ -18,7 +18,7 @@ import java.util.List;
 
 public class DaFlightTweaker implements ITweaker {
 
-    private final List<String> args = new ArrayList<String>();
+    private final List<String> args = new ArrayList<>();
 
     @Override
     public void acceptOptions(List<String> list, File gameDir, File assetsDir, String profile) {

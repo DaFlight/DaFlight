@@ -1,6 +1,5 @@
 package me.dags.daflight.util;
 
-import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * @author dags_ <dags@dags.me>
@@ -69,11 +69,11 @@ public class FileUtil {
         if (in.exists()) {
             try (FileReader fr = new FileReader(in)) {
                 T t = gson.fromJson(fr, type);
-                return Optional.fromNullable(t);
+                return Optional.ofNullable(t);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 }

@@ -1,9 +1,9 @@
 package me.dags.daflight.util;
 
-import com.google.common.base.Optional;
 import me.dags.daflight.DaFlight;
 
 import java.io.File;
+import java.util.Optional;
 
 /**
  * @author dags_ <dags@dags.me>
@@ -55,12 +55,11 @@ public class ConfigGlobal {
     public static ConfigGlobal getOrCreate(File configDir) {
         File globalFile = new File(configDir, "daflight-global.json");
         Optional<ConfigGlobal> optional = FileUtil.deserialize(globalFile, ConfigGlobal.class);
-        ConfigGlobal configGlobal = optional.or(new ConfigGlobal());
+        ConfigGlobal configGlobal = optional.orElseGet(ConfigGlobal::new);
         configGlobal.saveFile = globalFile;
         configGlobal.daflightDir = FileUtil.createFolder(configDir, "daflight-servers");
-        if (!optional.isPresent()) {
-            FileUtil.serialize(configGlobal, configGlobal.saveFile);
-        }
+        configGlobal.globalConfig.checkInputs();
+        FileUtil.serialize(configGlobal, configGlobal.saveFile);
         return configGlobal;
     }
 }

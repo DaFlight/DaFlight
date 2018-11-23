@@ -17,7 +17,7 @@ public abstract class MixinNetHandlerClient {
 
     @Inject(method = "handleCustomPayload(Lnet/minecraft/network/play/server/SPacketCustomPayload;)V", at = @At("RETURN"))
     public void handleCustomPayload(SPacketCustomPayload packetIn, CallbackInfo callbackInfo) {
-        ResourceLocation chan = packetIn.getChannelName();
-        DaFlight.instance().messageHandler().handlePacket(chan.getPath(), packetIn.getBufferData());
+        ResourceLocation channel = packetIn.getChannelName();
+        DaFlight.instance().messageHandler().handlePacket(channel, packetIn.getBufferData());
     }
 }
