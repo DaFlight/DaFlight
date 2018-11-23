@@ -4,19 +4,19 @@ package me.dags.daflight.gui;
  * @author dags_ <dags@dags.me>
  */
 
-public class UIToggle extends UIBind {
+public class Toggle extends Binding {
 
     private boolean boolValue = false;
     private String on;
     private String off;
 
-    public UIToggle(int width, int height, String on, String off) {
+    public Toggle(int width, int height, String on, String off) {
         super(width, height);
         this.on = on;
         this.off = off;
     }
 
-    public UIToggle left(int left) {
+    public Toggle left(int left) {
         super.left(left);
         return this;
     }
@@ -26,36 +26,36 @@ public class UIToggle extends UIBind {
         return boolValue ? on : off;
     }
 
-    public UIToggle set(boolean value) {
+    public Toggle set(boolean value) {
         this.boolValue = value;
         return this;
     }
 
-    public UIToggle attach(UIToggle toggle) {
+    public Toggle attach(Toggle toggle) {
         super.attach(toggle);
         return this;
     }
 
     @Override
-    public void mouseClick(int mouseX, int mouseY, int button) {
+    public boolean mouseClick(double mouseX, double mouseY, int button) {
         if (mouseOver) {
             boolValue = !boolValue;
             super.value = boolValue + "";
             active = true;
+            return true;
         }
-        if (super.toggle != null) {
-            super.toggle.mouseClick(mouseX, mouseY, button);
-        }
+        return super.toggle != null && super.toggle.mouseClick(mouseX, mouseY, button);
     }
 
     @Override
-    public void mouseRelease() {
+    public boolean mouseRelease() {
         active = false;
-        super.mouseRelease();
+        return super.mouseRelease();
     }
 
     @Override
-    public void keyType(char character, int id) {
+    public boolean keyType(char character, int id) {
+        return false;
     }
 
     public boolean boolValue() {

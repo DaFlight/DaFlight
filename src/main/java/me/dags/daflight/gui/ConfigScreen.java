@@ -5,9 +5,7 @@ import me.dags.daflight.MCHooks;
 import me.dags.daflight.util.Config;
 import me.dags.daflight.util.ConfigGlobal;
 import net.minecraft.client.gui.GuiScreen;
-import org.lwjgl.input.Keyboard;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,17 +17,17 @@ import java.util.Map;
 
 public class ConfigScreen extends GuiScreen {
 
-    private List<UIElement> elements = new ArrayList<UIElement>();
+    private List<Element> elements = new ArrayList<Element>();
 
-    private Map<String, UISlider> sliders = new LinkedHashMap<String, UISlider>();
-    private Map<String, UIBind> binds = new LinkedHashMap<String, UIBind>();
+    private Map<String, Slider> sliders = new LinkedHashMap<String, Slider>();
+    private Map<String, Binding> binds = new LinkedHashMap<String, Binding>();
 
-    private UIToggle disable;
-    private UIToggle hud;
-    private UIToggle speedometer;
-    private UIToggle flight3d;
-    private UIToggle disableFov;
-    private UIToggle serverConfigs;
+    private Toggle disable;
+    private Toggle hud;
+    private Toggle speedometer;
+    private Toggle flight3d;
+    private Toggle disableFov;
+    private Toggle serverConfigs;
 
     private ConfigGlobal configGlobal;
     private Config config;
@@ -39,12 +37,12 @@ public class ConfigScreen extends GuiScreen {
         this.config = configGlobal.getActiveConfig();
     }
 
-    private void register(UIElement element) {
-        if (element instanceof UISlider) {
-            sliders.put(element.getDisplayString(), (UISlider) element);
+    private void register(Element element) {
+        if (element instanceof Slider) {
+            sliders.put(element.getDisplayString(), (Slider) element);
         }
-        if (element instanceof UIBind) {
-            binds.put(element.getDisplayString(), (UIBind) element);
+        if (element instanceof Binding) {
+            binds.put(element.getDisplayString(), (Binding) element);
         }
         elements.add(element);
     }
@@ -64,68 +62,76 @@ public class ConfigScreen extends GuiScreen {
         int l = (displayWidth / 2) - (w / 2);
         int w0 = (w / 2) - 1;
 
-        elements.add(new UILabel(8, 0x00b3b3).left(l).setDisplay("Options"));
-        elements.add(disable = new UIToggle(w0, 10, "Mod: Off", "Mod: On").set(config.disabled).left(l).attach(hud = new UIToggle(w0, 10, "Hud: On", "Hud: Off").set(config.hud).left(l)));
-        elements.add(speedometer = new UIToggle(w0, 10, "Speedometer: On", "Speedometer: Off").set(config.speedometer).left(l).attach(disableFov = new UIToggle(w0, 10, "FOV Effect: Off", "FOV Effect: On").set(config.disableFov).left(l)));
-        elements.add(flight3d = new UIToggle(w0, 10, "Flight Mode: 3D", "Flight Mode: Normal").set(config.flight3D).left(l).attach(serverConfigs = new UIToggle(w0, 10, "Server Configs: On", "Server Configs: Off").set(configGlobal.serverConfigs).left(l)));
+        elements.add(new Label(8, 0x00b3b3).left(l).setDisplay("Options"));
+        elements.add(disable = new Toggle(w0, 10, "Mod: Off", "Mod: On").set(config.disabled).left(l).attach(hud = new Toggle(w0, 10, "Hud: On", "Hud: Off").set(config.hud).left(l)));
+        elements.add(speedometer = new Toggle(w0, 10, "Speedometer: On", "Speedometer: Off").set(config.speedometer).left(l).attach(disableFov = new Toggle(w0, 10, "FOV Effect: Off", "FOV Effect: On").set(config.disableFov).left(l)));
+        elements.add(flight3d = new Toggle(w0, 10, "Flight Mode: 3D", "Flight Mode: Normal").set(config.flight3D).left(l).attach(serverConfigs = new Toggle(w0, 10, "Server Configs: On", "Server Configs: Off").set(configGlobal.serverConfigs).left(l)));
 
-        elements.add(new UILabel(8, 0x00b3b3).left(l).setDisplay("Tuning"));
-        register(new UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Fly Speed").setValue(config.flySpeed).setDefault(1F));
-        register(new UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Fly Boost").setValue(config.flyBoost).setDefault(2F));
-        register(new UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Sprint Speed").setValue(config.sprintSpeed).setDefault(1F));
-        register(new UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Sprint Boost").setValue(config.sprintBoost).setDefault(2F));
-        register(new UISlider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Jump Modifier").setValue(config.jumpModifier).setDefault(2F));
-        register(new UISlider(w, 10, 2F, 0.0F, 4, 1).left(l).setDisplay("Strafe Modifier").setValue(config.strafeModifier).setDefault(1F));
-        register(new UISlider(w, 10, 2F, 0.0F, 4, 1).left(l).setDisplay("Ascend Modifier").setValue(config.verticalModifier).setDefault(1F));
+        elements.add(new Label(8, 0x00b3b3).left(l).setDisplay("Tuning"));
+        register(new Slider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Fly Speed").setValue(config.flySpeed).setDefault(1F));
+        register(new Slider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Fly Boost").setValue(config.flyBoost).setDefault(2F));
+        register(new Slider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Sprint Speed").setValue(config.sprintSpeed).setDefault(1F));
+        register(new Slider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Sprint Boost").setValue(config.sprintBoost).setDefault(2F));
+        register(new Slider(w, 10, 10F, 0.0F, 4, 1).left(l).setDisplay("Jump Modifier").setValue(config.jumpModifier).setDefault(2F));
+        register(new Slider(w, 10, 2F, 0.0F, 4, 1).left(l).setDisplay("Strafe Modifier").setValue(config.strafeModifier).setDefault(1F));
+        register(new Slider(w, 10, 2F, 0.0F, 4, 1).left(l).setDisplay("Ascend Modifier").setValue(config.verticalModifier).setDefault(1F));
 
         int w1 = (w / 3) * 2 - 1;
         int w2 = w - w1 - 2;
-        elements.add(new UILabel(8, 0x00b3b3).left(l).setDisplay("Binds"));
-        register(new UIBind(w1, 10).left(l).setDisplay("Fly").setValue(config.fly).attach(new UIToggle(w2, 10, "Type: Toggle", "Type: Hold").set(config.flyToggle)).setDefault("F"));
-        register(new UIBind(w1, 10).left(l).setDisplay("Sprint").setValue(config.sprint).attach(new UIToggle(w2, 10, "Type: Toggle", "Type: Hold").set(config.sprintToggle)).setDefault("R"));
-        register(new UIBind(w1, 10).left(l).setDisplay("Boost").setValue(config.boost).attach(new UIToggle(w2, 10, "Type: Toggle", "Type: Hold").set(config.boostToggle)).setDefault("X"));
-        register(new UIBind(w1, 10).left(l).setDisplay("Fly Up").setValue(config.up).setDefault("SPACE"));
-        register(new UIBind(w1, 10).left(l).setDisplay("Fly Down").setValue(config.down).setDefault("LSHIFT"));
-        register(new UIBind(w1, 10).left(l).setDisplay("Menu").setValue(config.menu).setDefault("F9"));
+        elements.add(new Label(8, 0x00b3b3).left(l).setDisplay("Binds"));
+        register(new Binding(w1, 10).left(l).setDisplay("Fly").setValue(config.fly).attach(new Toggle(w2, 10, "Type: Toggle", "Type: Hold").set(config.flyToggle)).setDefault("key.keyboard.f"));
+        register(new Binding(w1, 10).left(l).setDisplay("Sprint").setValue(config.sprint).attach(new Toggle(w2, 10, "Type: Toggle", "Type: Hold").set(config.sprintToggle)).setDefault("key.keyboard.r"));
+        register(new Binding(w1, 10).left(l).setDisplay("Boost").setValue(config.boost).attach(new Toggle(w2, 10, "Type: Toggle", "Type: Hold").set(config.boostToggle)).setDefault("key.keyboard.x"));
+        register(new Binding(w1, 10).left(l).setDisplay("Fly Up").setValue(config.up).setDefault("key.keyboard.space"));
+        register(new Binding(w1, 10).left(l).setDisplay("Fly Down").setValue(config.down).setDefault("key.keyboard.left.shift"));
+        register(new Binding(w1, 10).left(l).setDisplay("Menu").setValue(config.menu).setDefault("key.keyboard.f9"));
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
         int top = 5;
-        for (UIElement s : elements) {
+        for (Element s : elements) {
             s.top(top).draw(mouseX, mouseY);
             top += s.getHeight() + 2;
         }
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        for (UIElement s : elements) {
-            s.mouseClick(mouseX, mouseY, mouseButton);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        boolean result = false;
+        for (Element s : elements) {
+            result |= s.mouseClick(mouseX, mouseY, button);
         }
+        return result || super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int state) {
-        for (UIElement s : elements) {
-            s.mouseRelease();
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        boolean result = false;
+        for (Element s : elements) {
+            result |= s.mouseRelease();
         }
+        return result || super.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
-    public void keyTyped(char typedChar, int keyCode) throws IOException {
+    public boolean keyPressed(int id, int b, int type) {
         boolean activeAndEsc = false;
-        for (UIElement e : elements) {
-            activeAndEsc = activeAndEsc || e.active() && keyCode == Keyboard.KEY_ESCAPE;
-            e.keyType(typedChar, keyCode);
+        boolean result = false;
+        for (Element e : elements) {
+            activeAndEsc |= e.active() && id == MCHooks.Input.escape();
+            result |= e.keyType('.', id);
         }
-        if (keyCode == Keyboard.KEY_ESCAPE && !activeAndEsc) {
-            updateConfig();
-            configGlobal.save();
-            DaFlight.instance().updateConfig();
-            MCHooks.GUI.displayScreen(null);
-        }
+        return activeAndEsc || result || super.keyPressed(id, b, type);
+    }
+
+    @Override
+    public void close() {
+        updateConfig();
+        configGlobal.save();
+        DaFlight.instance().updateConfig();
+        super.close();
     }
 
     private void updateConfig() {

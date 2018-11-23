@@ -6,7 +6,7 @@ import me.dags.daflight.MCHooks;
  * @author dags_ <dags@dags.me>
  */
 
-public class UILabel implements UIElement {
+public class Label implements Element {
 
     private final int height;
     private final int color;
@@ -15,36 +15,36 @@ public class UILabel implements UIElement {
     private int left = 0;
     private int top = 0;
 
-    public UILabel(int height, int color) {
+    public Label(int height, int color) {
         this.height = height;
         this.color = color;
     }
 
     @Override
-    public UIElement top(int y) {
+    public Element top(int y) {
         top = y;
         return this;
     }
 
     @Override
-    public UIElement left(int x) {
+    public Element left(int x) {
         left = x;
         return this;
     }
 
     @Override
-    public UIElement setValue(Object value) {
+    public Element setValue(Object value) {
         return this;
     }
 
     @Override
-    public UIElement setDisplay(String display) {
+    public Element setDisplay(String display) {
         label = display;
         return this;
     }
 
     @Override
-    public UIElement setDefault(Object value) {
+    public Element setDefault(Object value) {
         return this;
     }
 
@@ -64,23 +64,23 @@ public class UILabel implements UIElement {
     }
 
     @Override
-    public void draw(int mouseX, int mouseY) {
+    public void draw(double mouseX, double mouseY) {
         MCHooks.GUI.drawString(label, left, top, color);
     }
 
     @Override
-    public void mouseClick(int mouseX, int mouseY, int button) {
-
+    public boolean mouseClick(double mouseX, double mouseY, int button) {
+        return false;
     }
 
     @Override
-    public void mouseRelease() {
-
+    public boolean mouseRelease() {
+        return false;
     }
 
     @Override
-    public void keyType(char character, int id) {
-
+    public boolean keyType(char character, int id) {
+        return false;
     }
 
     @Override

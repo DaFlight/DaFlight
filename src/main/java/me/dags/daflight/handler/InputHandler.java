@@ -16,8 +16,9 @@ public class InputHandler {
     private final Bind flyBind;
     private final Bind sprintBind;
     private final Bind boostBind;
-    private final Bind flyUpBind;
-    private final Bind flyDownBind;
+
+    final Bind flyUpBind;
+    final Bind flyDownBind;
 
     public InputHandler(Config config, MovementHandler movementHandler) {
         this.movementHandler = movementHandler;
@@ -27,14 +28,6 @@ public class InputHandler {
         boostBind = Bind.from("boost", config.boost, config.boostToggle);
         flyUpBind = Bind.from("up", config.up, true);
         flyDownBind = Bind.from("down", config.down, true);
-    }
-
-    Bind getFlyUpBind() {
-        return flyUpBind;
-    }
-
-    Bind getFlyDownBind() {
-        return flyDownBind;
     }
 
     public void handleMenuInput() {
@@ -84,10 +77,10 @@ public class InputHandler {
             MCHooks.Player.setFlying(movementHandler.flying);
             MCHooks.Player.setInvincible(movementHandler.flying || movementHandler.sprinting);
             DaFlight.instance().messageHandler().sendPlayerAbilities();
-            DaFlight.instance().messageHandler().sendState(MessageHandler.CHANNEL_FLY, movementHandler.flying);
+            DaFlight.instance().messageHandler().sendState(MessageHandler.FLY, movementHandler.flying);
         }
         if (wasSprinting != movementHandler.sprinting) {
-            DaFlight.instance().messageHandler().sendState(MessageHandler.CHANNEL_SPRINT, movementHandler.sprinting);
+            DaFlight.instance().messageHandler().sendState(MessageHandler.SPRINT, movementHandler.sprinting);
             MCHooks.Player.setInvincible(movementHandler.flying || movementHandler.sprinting);
         }
     }

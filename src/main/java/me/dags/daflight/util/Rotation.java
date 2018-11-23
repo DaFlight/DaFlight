@@ -7,10 +7,9 @@ public class Rotation {
 
     private float pitch, yaw;
 
-    public Rotation update(float pitch, float yaw) {
+    public void set(float pitch, float yaw) {
         this.pitch = pitch;
         this.yaw = yaw;
-        return this;
     }
 
     public float getPitch() {

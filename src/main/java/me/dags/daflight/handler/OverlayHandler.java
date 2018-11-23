@@ -25,13 +25,13 @@ public class OverlayHandler {
             boolean active = false;
             if (handler.flying()) {
                 active = true;
-                String fly = handler.flyBoosting() ? global.flyDisplay + global.boostDisplay : global.flyDisplay;
+                String fly = handler.flyBoosting ? global.flyDisplay + global.boostDisplay : global.flyDisplay;
                 MCHooks.GUI.drawString(fly, x, y, 0xFFFFFF);
                 y += 9;
             }
             if (handler.sprinting()) {
                 active = true;
-                String sprint = handler.sprintBoosting() ? global.sprintDisplay + global.boostDisplay : global.sprintDisplay;
+                String sprint = handler.sprintBoosting ? global.sprintDisplay + global.boostDisplay : global.sprintDisplay;
                 MCHooks.GUI.drawString(sprint, x, y, 0xFFFFFF);
                 y += 9;
             }

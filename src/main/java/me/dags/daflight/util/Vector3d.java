@@ -7,13 +7,6 @@ public class Vector3d {
 
     private double x, y, z;
 
-    public Vector3d update(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        return this;
-    }
-
     public double getX() {
         return x;
     }
@@ -26,17 +19,38 @@ public class Vector3d {
         return z;
     }
 
-    public Vector3d add(double x, double y, double z) {
-        x += x;
-        y += y;
-        z += z;
-        return this;
+    public double length() {
+        return Math.sqrt(x * x + y * y + z * z);
     }
 
-    public Vector3d mult(double x, double y, double z) {
-        x *= x;
-        y *= y;
-        z *= z;
-        return this;
+    public void set(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public void add(double x, double y, double z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+    }
+
+    public void mult(double factor) {
+        mult(factor, factor, factor);
+    }
+
+    public void mult(double x, double y, double z) {
+        this.x *= x;
+        this.y *= y;
+        this.z *= z;
+    }
+
+    public void norm() {
+        double length = length();
+        if (length != 0) {
+            x /= length;
+            y /= length;
+            z /= length;
+        }
     }
 }

@@ -12,25 +12,28 @@
     "hideServer": true
   },
   "versionInfo": {
+    "inheritsFrom": "@mcversion@",
     "id": "@project@-@version@",
     "time": "@timestamp@",
     "releaseTime": "2015-12-08T21:37:23+01:00",
     "type": "release",
-    "minecraftArguments": "--tweakClass @tweak_class@ --username ${auth_player_name} --version ${version_name} --gameDir ${game_directory} --assetsDir ${assets_root} --assetIndex ${assets_index_name} --uuid ${auth_uuid} --accessToken ${auth_access_token} --userType ${user_type} --versionType ${version_type}",
+    "arguments": {
+      "game": [
+        "--tweakClass",
+        "@tweak_class@"
+      ]
+    },
+    "mainClass": "net.minecraft.launchwrapper.Launch",
     "libraries": [
       {
         "name": "@artifact@"
       },
       {
-        "name": "net.minecraft:launchwrapper:1.12"
+        "name": "org.ow2.asm:asm-all:5.0.3"
       },
       {
-        "name": "org.ow2.asm:asm-all:5.0.3"
+        "name": "net.minecraft:launchwrapper:1.12"
       }
-    ],
-    "mainClass": "net.minecraft.launchwrapper.Launch",
-    "minimumLauncherVersion": 16,
-    "inheritsFrom": "@mcversion@",
-    "jar": "@mcversion@"
+    ]
   }
 }

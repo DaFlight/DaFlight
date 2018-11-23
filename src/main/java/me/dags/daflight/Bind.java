@@ -1,12 +1,10 @@
 package me.dags.daflight;
 
-import org.lwjgl.input.Keyboard;
-
 /**
  * @author dags_ <dags@dags.me>
  */
 
-public abstract class Bind {
+public class Bind {
 
     private final String bindName;
     private int id;
@@ -27,16 +25,20 @@ public abstract class Bind {
         return this;
     }
 
-    public String getBindName() {
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
         return bindName;
+    }
+
+    public String getDisplayName() {
+        return MCHooks.Input.display(bindName);
     }
 
     public boolean isToggle() {
         return toggle;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public boolean active() {
@@ -50,52 +52,16 @@ public abstract class Bind {
         return tapped = false;
     }
 
-    public abstract boolean keyHeld();
-
-    public abstract Bind setBind(String button);
-
-    public static class Key extends Bind {
-
-        public Key(String name, String key) {
-            super(name);
-            setBind(key);
-        }
-
-        @Override
-        public boolean keyHeld() {
-            return Keyboard.isKeyDown(getId());
-        }
-
-        @Override
-        public Bind setBind(String button) {
-            setId(Keyboard.getKeyIndex(button));
-            return this;
-        }
+    public boolean keyHeld() {
+        return MCHooks.Input.isDown(getId());
     }
 
-    public static class Mouse extends Bind {
-
-        public Mouse(String name, String button) {
-            super(name);
-            setBind(button);
-        }
-
-        @Override
-        public boolean keyHeld() {
-            return org.lwjgl.input.Mouse.isButtonDown(getId());
-        }
-
-        @Override
-        public Bind setBind(String button) {
-            setId(org.lwjgl.input.Mouse.getButtonIndex(button));
-            return this;
-        }
+    public Bind setBind(String name) {
+        setId(MCHooks.Input.id(name));
+        return this;
     }
 
     public static Bind from(String name, String button, boolean toggle) {
-        if (button.startsWith("BUTTON")) {
-            return new Mouse(name, button).setToggle(toggle);
-        }
-        return new Key(name, button).setToggle(toggle);
+        return new Bind(name).setBind(button).setToggle(toggle);
     }
 }
