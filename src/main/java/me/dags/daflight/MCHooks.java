@@ -24,7 +24,7 @@ public class MCHooks {
     public static class Game {
 
         public static Minecraft getInstance() {
-            return Minecraft.getMinecraft();
+            return Minecraft.getInstance();
         }
 
         public static File gameDir() {
@@ -40,7 +40,7 @@ public class MCHooks {
         }
 
         public static boolean inGameHasFocus() {
-            return Game.getInstance().isWindowFocused() && Game.getInstance().currentScreen == null;
+            return Game.getInstance().isGameFocused() && Game.getInstance().currentScreen == null;
         }
 
         public static boolean displayDebugInfo() {
@@ -74,7 +74,7 @@ public class MCHooks {
             if (withShadow) {
                 Game.getInstance().fontRenderer.drawStringWithShadow(string, x, y, colour);
             } else {
-                Game.getInstance().fontRenderer.func_211126_b(string, x, y, colour);
+                Game.getInstance().fontRenderer.drawString(string, x, y, colour);
             }
         }
     }
@@ -114,11 +114,11 @@ public class MCHooks {
         }
 
         public static String mouseName(int id) {
-            return mouse(id).getUnlocalizedName();
+            return mouse(id).getTranslationKey();
         }
 
         public static String keyboardName(int id) {
-            return keyboard(id).getUnlocalizedName();
+            return keyboard(id).getTranslationKey();
         }
 
         public static InputMappings.Input mouse(int id) {
@@ -145,20 +145,20 @@ public class MCHooks {
         }
 
         public static boolean allowFlying() {
-            return present() && (getPlayer().capabilities.allowFlying || Game.getInstance().isSingleplayer());
+            return present() && (getPlayer().abilities.allowFlying || Game.getInstance().isSingleplayer());
         }
 
         public static boolean isFlying() {
-            return present() && getPlayer().capabilities.isFlying;
+            return present() && getPlayer().abilities.isFlying;
         }
 
         private static boolean isInvulnerable() {
-            return present() && getPlayer().isSpectator() || getPlayer().capabilities.isCreativeMode;
+            return present() && getPlayer().isSpectator() || getPlayer().abilities.isCreativeMode;
         }
 
         public static void setFlying(boolean state) {
             if (present()) {
-                getPlayer().capabilities.isFlying = state;
+                getPlayer().abilities.isFlying = state;
             }
         }
 
@@ -168,7 +168,7 @@ public class MCHooks {
                 if (server != null) {
                     EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(getPlayer().getUniqueID());
                     if (player != null) {
-                        player.capabilities.disableDamage = state;
+                        player.abilities.disableDamage = state;
                     }
                 }
             }

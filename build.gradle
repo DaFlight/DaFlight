@@ -1,31 +1,35 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url "https://www.dimdev.org/maven/" }
-        maven { url "https://plugins.gradle.org/m2/" }
+        mavenCentral()
+        maven { url 'https://www.jitpack.io' }
         maven { url "http://repo.spongepowered.org/maven" }
+        maven { url 'https://files.minecraftforge.net/maven' }
     }
     dependencies {
-        classpath "org.dimdev:ForgeGradle:2.3-SNAPSHOT"
         classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
+        classpath "com.github.Chocohead:ForgeGradle:jitpack-SNAPSHOT"
         classpath "com.github.jengelman.gradle.plugins:shadow:4.0.2"
     }
 }
 
-apply plugin: "net.minecraftforge.gradle.tweaker-client"
+apply plugin: 'net.minecraftforge.gradle.tweaker-client'
 apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "org.spongepowered.mixin"
-apply plugin: "java"
+apply plugin: 'java'
 
 group = "me.dags"
-version = "5.3.0pre1-mc1.13"
+version = "5.3.0-mc1.13.2-SNAPSHOT"
 archivesBaseName = "daflight"
 targetCompatibility = sourceCompatibility = "1.8"
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 minecraft {
-    version = "1.13"
-    mappings = "snapshot_5"
-    runDir = "run"
+    version = '1.13.2'
+    mappings = 'snapshot_20181130'
+    runDir = 'run'
     tweakClass = "me.dags.daflight.launch.DaFlightTweaker"
     makeObfSourceJar = false
 }
@@ -37,6 +41,8 @@ configurations {
 
 repositories {
     mavenCentral()
+    mavenCentral()
+    maven { url 'https://www.jitpack.io' }
     maven { url "https://www.dimdev.org/maven/" }
     maven { url "https://repo.spongepowered.org/maven/" }
 }
