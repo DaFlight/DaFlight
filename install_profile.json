@@ -8,7 +8,7 @@
     "welcome": "Welcome to the @project@ installer.",
     "minecraft":"@mcversion@",
     "mirrorList":"",
-    "logo":"/daflight-installer-logo.png",
+    "logo":"/installer-logo.png",
     "hideServer": true
   },
   "versionInfo": {

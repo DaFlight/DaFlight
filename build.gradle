@@ -1,14 +1,15 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url "https://www.dimdev.org/maven/" }
-        maven { url "https://plugins.gradle.org/m2/" }
+        mavenCentral()
+        maven { url 'https://www.jitpack.io' }
         maven { url "http://repo.spongepowered.org/maven" }
+        maven { url 'https://files.minecraftforge.net/maven' }
     }
     dependencies {
-        classpath "org.dimdev:ForgeGradle:2.3-SNAPSHOT"
-        classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
+        classpath "com.github.Chocohead:ForgeGradle:jitpack-SNAPSHOT"
         classpath "com.github.jengelman.gradle.plugins:shadow:4.0.2"
+        classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
     }
 }
 
@@ -18,14 +19,14 @@ apply plugin: "org.spongepowered.mixin"
 apply plugin: "java"
 
 group = "me.dags"
-version = "5.3.0pre1-mc1.13"
+version = "5.3.0-mc1.13.2"
 archivesBaseName = "daflight"
-targetCompatibility = sourceCompatibility = "1.8"
+targetCompatibility = sourceCompatibility = 1.8
 
 minecraft {
-    version = "1.13"
-    mappings = "snapshot_5"
-    runDir = "run"
+    version = '1.13.2'
+    mappings = 'snapshot_20181130'
+    runDir = 'run'
     tweakClass = "me.dags.daflight.launch.DaFlightTweaker"
     makeObfSourceJar = false
 }
@@ -37,6 +38,8 @@ configurations {
 
 repositories {
     mavenCentral()
+    mavenCentral()
+    maven { url 'https://www.jitpack.io' }
     maven { url "https://www.dimdev.org/maven/" }
     maven { url "https://repo.spongepowered.org/maven/" }
 }
@@ -108,8 +111,7 @@ task processJson(type: Copy) {
         }
     }
     from(".") {
-        include "daflight-logo.png"
-        rename { "daflight-installer-logo.png" }
+        include "installer-logo.png"
     }
     into "build/distributions/packaging/resources"
     outputs.upToDateWhen { false }
@@ -117,8 +119,8 @@ task processJson(type: Copy) {
 
 task downloadInstaller(type: EtagDownloadTask) {
     url = "http://files.minecraftforge.net/maven/net/minecraftforge/installer/1.5/installer-1.5-shrunk.jar"
-    dieWithError = true
     file = "build/distributions/packaging/installer-fresh.jar"
+    dieWithError = true
 }
 
 task installer(type: Zip) {
