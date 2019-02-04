@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * @author dags <dags@dags.me>
  */
 @Mixin(GameRenderer.class)
-public abstract class MixinEntityRenderer {
+public abstract class MixinGameRenderer {
 
     @Inject(method = "applyBobbing(F)V", at = @At("HEAD"), cancellable = true)
     private void onApplyBobbing(float partialTicks, CallbackInfo callbackInfo) {

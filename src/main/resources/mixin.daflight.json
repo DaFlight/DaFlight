@@ -6,9 +6,9 @@
   "refmap": "mixin.daflight.refmap.json",
   "mixins": [
     "MixinAbstractClientPlayer",
-    "MixinGuiIngame",
     "MixinEntityPlayerSP",
-    "MixinEntityRenderer",
+    "MixinGameRenderer",
+    "MixinGuiIngame",
     "MixinMinecraft",
     "MixinNetHandlerClient"
   ]
