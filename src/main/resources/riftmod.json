@@ -1,0 +1,6 @@
+{
+  "id": "daflight",
+  "name": "DaFlight",
+  "authors": ["dags"],
+  "listeners": ["me.dags.daflight.launch.DaFlightRiftLoader"]
+}

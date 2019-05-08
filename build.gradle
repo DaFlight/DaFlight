@@ -47,6 +47,7 @@ repositories {
 dependencies {
     shade("org.spongepowered:mixin:0.7.11-SNAPSHOT") { transitive = false }
     implementation("net.minecraft:launchwrapper:1.12") { transitive = false }
+    implementation ("com.github.Chocohead:Rift:jitpack-SNAPSHOT:dev") { transitive = false }
     runtime("org.spongepowered:mixin:0.7.11-SNAPSHOT") { transitive = false }
     runtime("net.minecraft:launchwrapper:1.12") { transitive = false }
 }
