@@ -92,7 +92,7 @@ public class UIBind implements UIElement<String> {
         MCHooks.GUI.drawRectangle(left, top, left + width, top + height, BACKGROUND_COLOR);
         String str = getText();
         int textLeft = left + (width / 2) - (MCHooks.GUI.stringWidth(str) / 2);
-        MCHooks.GUI.drawString(str, textLeft, top, active ? ACTIVE_COLOR : TEXT_COLOR, true);
+        MCHooks.GUI.drawString(str, textLeft, top + TEXT_VERT_OFFSET, active ? ACTIVE_COLOR : TEXT_COLOR, true);
 
         if (toggle != null) {
             toggle.left(left + width + 2);

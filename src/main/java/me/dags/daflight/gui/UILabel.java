@@ -65,7 +65,7 @@ public class UILabel implements UIElement {
 
     @Override
     public void draw(int mouseX, int mouseY) {
-        MCHooks.GUI.drawString(label, left, top, color);
+        MCHooks.GUI.drawString(label, left, top + TEXT_VERT_OFFSET, color);
     }
 
     @Override
