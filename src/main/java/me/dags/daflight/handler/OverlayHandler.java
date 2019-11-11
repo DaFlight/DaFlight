@@ -47,7 +47,7 @@ public class OverlayHandler {
         if (duration >= 500) {
             lastTime = time;
             BlockPos pos = MCHooks.Player.position();
-            double distance = pos.getDistance(lastX, lastY, lastZ);
+            double distance = Math.sqrt(pos.distanceSq(lastX, lastY, lastZ, true));
 
             lastX = pos.getX();
             lastY = pos.getY();

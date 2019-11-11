@@ -4,7 +4,8 @@ import me.dags.daflight.DaFlight;
 import me.dags.daflight.MCHooks;
 import me.dags.daflight.util.Config;
 import me.dags.daflight.util.ConfigGlobal;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -15,7 +16,7 @@ import java.util.Map;
  * @author dags_ <dags@dags.me>
  */
 
-public class ConfigScreen extends GuiScreen {
+public class ConfigScreen extends Screen {
 
     private List<Element> elements = new ArrayList<Element>();
 
@@ -33,6 +34,7 @@ public class ConfigScreen extends GuiScreen {
     private Config config;
 
     public ConfigScreen(ConfigGlobal configGlobal) {
+        super(new StringTextComponent("DaFlight Config"));
         this.configGlobal = configGlobal;
         this.config = configGlobal.getActiveConfig();
     }
@@ -48,7 +50,7 @@ public class ConfigScreen extends GuiScreen {
     }
 
     @Override
-    public void initGui() {
+    public void init() {
         if (!elements.isEmpty()) {
             updateConfig();
         }
@@ -89,7 +91,7 @@ public class ConfigScreen extends GuiScreen {
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-        drawDefaultBackground();
+        renderBackground();
         int top = 5;
         for (Element s : elements) {
             s.top(top).draw(mouseX, mouseY);
@@ -127,11 +129,11 @@ public class ConfigScreen extends GuiScreen {
     }
 
     @Override
-    public void close() {
+    public void onClose() {
         updateConfig();
         configGlobal.save();
         DaFlight.instance().updateConfig();
-        super.close();
+        super.onClose();
     }
 
     private void updateConfig() {

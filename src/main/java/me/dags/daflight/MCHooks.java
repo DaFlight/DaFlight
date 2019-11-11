@@ -3,13 +3,13 @@ package me.dags.daflight;
 import io.netty.buffer.Unpooled;
 import me.dags.daflight.handler.MessageHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.network.play.client.CCustomPayloadPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -50,7 +50,7 @@ public class MCHooks {
 
     public static class GUI {
 
-        public static void displayScreen(GuiScreen screen) {
+        public static void displayScreen(Screen screen) {
             Game.getInstance().displayGuiScreen(screen);
         }
 
@@ -63,7 +63,7 @@ public class MCHooks {
         }
 
         public static void drawRectangle(int left, int top, int right, int bottom, int color) {
-            Gui.drawRect(left, top, right, bottom, color);
+            AbstractGui.fill(left, top, right, bottom, color);
         }
 
         public static void drawString(String string, int x, int y, int colour) {
@@ -98,11 +98,11 @@ public class MCHooks {
         }
 
         public static boolean isDown(int id) {
-            return InputMappings.isKeyDown(id);
+            return InputMappings.isKeyDown(Game.getInstance().mainWindow.getHandle(), id);
         }
 
         public static boolean isDown(String name) {
-            return InputMappings.isKeyDown(id(name));
+            return InputMappings.isKeyDown(Game.getInstance().mainWindow.getHandle(), id(name));
         }
 
         public static int id(String name) {
@@ -110,7 +110,7 @@ public class MCHooks {
         }
 
         public static String display(String name) {
-            return InputMappings.getInputByName(name).getName();
+            return InputMappings.getInputByName(name).getTranslationKey();
         }
 
         public static String mouseName(int id) {
@@ -166,7 +166,7 @@ public class MCHooks {
             if (Game.getInstance().isSingleplayer() && !isInvulnerable()) {
                 MinecraftServer server = Game.getInstance().getIntegratedServer();
                 if (server != null) {
-                    EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(getPlayer().getUniqueID());
+                    ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(getPlayer().getUniqueID());
                     if (player != null) {
                         player.abilities.disableDamage = state;
                     }
@@ -191,7 +191,7 @@ public class MCHooks {
             }
         }
 
-        private static EntityPlayerSP getPlayer() {
+        private static ClientPlayerEntity getPlayer() {
             return Game.getInstance().player;
         }
     }
@@ -204,17 +204,17 @@ public class MCHooks {
             for (ResourceLocation channel : channels) {
                 buffer.writeResourceLocation(channel);
             }
-            CPacketCustomPayload payload = new CPacketCustomPayload(MessageHandler.REGISTER, buffer);
+            CCustomPayloadPacket payload = new CCustomPayloadPacket(MessageHandler.REGISTER, buffer);
             sendPayload(payload);
         }
 
         public static void sendMessageBytes(ResourceLocation channel, byte[] data) {
             PacketBuffer buf = new PacketBuffer(Unpooled.wrappedBuffer(data));
-            CPacketCustomPayload payload = new CPacketCustomPayload(channel, buf);
+            CCustomPayloadPacket payload = new CCustomPayloadPacket(channel, buf);
             sendPayload(payload);
         }
 
-        private static void sendPayload(CPacketCustomPayload packetCustomPayload) {
+        private static void sendPayload(CCustomPayloadPacket packetCustomPayload) {
             if (Player.present() && Player.getPlayer().connection != null) {
                 Player.getPlayer().connection.sendPacket(packetCustomPayload);
             }
@@ -224,11 +224,11 @@ public class MCHooks {
     public static class Profiler {
 
         public static void startSection(String section) {
-            Game.getInstance().profiler.startSection(section);
+            Game.getInstance().getProfiler().startSection(section);
         }
 
         public static void endSection() {
-            Game.getInstance().profiler.endSection();
+            Game.getInstance().getProfiler().endSection();
         }
     }
 }

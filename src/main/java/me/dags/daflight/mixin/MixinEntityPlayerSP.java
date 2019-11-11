@@ -3,19 +3,19 @@ package me.dags.daflight.mixin;
 import com.mojang.authlib.GameProfile;
 import me.dags.daflight.DaFlight;
 import me.dags.daflight.MCHooks;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.world.World;
+import net.minecraft.client.world.ClientWorld;
 import org.spongepowered.asm.mixin.Mixin;
 
 /**
  * @author dags <dags@dags.me>
  */
-@Mixin(EntityPlayerSP.class)
-public class MixinEntityPlayerSP extends AbstractClientPlayer {
+@Mixin(ClientPlayerEntity.class)
+public class MixinEntityPlayerSP extends AbstractClientPlayerEntity {
 
-    public MixinEntityPlayerSP(World world, GameProfile profile) {
+    public MixinEntityPlayerSP(ClientWorld world, GameProfile profile) {
         super(world, profile);
     }
 

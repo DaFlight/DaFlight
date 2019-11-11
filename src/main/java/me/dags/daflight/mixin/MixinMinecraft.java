@@ -3,8 +3,8 @@ package me.dags.daflight.mixin;
 import me.dags.daflight.DaFlight;
 import me.dags.daflight.MCHooks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IWindowEventListener;
 import net.minecraft.profiler.ISnooperInfo;
-import net.minecraft.util.IThreadListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * @author dags <dags@dags.me>
  */
 @Mixin(Minecraft.class)
-public abstract class MixinMinecraft implements IThreadListener, ISnooperInfo {
+public abstract class MixinMinecraft implements ISnooperInfo, IWindowEventListener, AutoCloseable {
 
     @Inject(method = "init()V", at = @At("RETURN"))
     public void endStartGame(CallbackInfo callbackInfo) {

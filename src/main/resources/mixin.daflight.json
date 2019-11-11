@@ -1,6 +1,6 @@
 {
   "required": true,
-  "minVersion": "0.6",
+  "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "package": "me.dags.daflight.mixin",
   "refmap": "mixin.daflight.refmap.json",

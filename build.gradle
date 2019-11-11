@@ -2,57 +2,60 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url 'https://www.jitpack.io' }
+        maven { url "https://jitpack.io" }
         maven { url "http://repo.spongepowered.org/maven" }
         maven { url 'https://files.minecraftforge.net/maven' }
     }
     dependencies {
-        classpath "com.github.Chocohead:ForgeGradle:jitpack-SNAPSHOT"
-        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.2"
-        classpath "org.spongepowered:mixingradle:0.6-SNAPSHOT"
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
+//        classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT", changing: true
+        classpath group: "com.github.SpongePowered", name: "MixinGradle", version: "master-SNAPSHOT", changing: true
+        classpath group: "com.github.jengelman.gradle.plugins", name: "shadow", version: "4.0.2"
     }
 }
 
-apply plugin: "net.minecraftforge.gradle.tweaker-client"
 apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "net.minecraftforge.gradle"
 apply plugin: "org.spongepowered.mixin"
 apply plugin: "java"
 
 group = "me.dags"
-version = "5.3.0-mc1.13.2"
+version = "${mod_version}-mc${mc_version}"
 archivesBaseName = "daflight"
 targetCompatibility = sourceCompatibility = 1.8
-
-minecraft {
-    version = '1.13.2'
-    mappings = 'snapshot_20181130'
-    runDir = 'run'
-    tweakClass = "me.dags.daflight.launch.DaFlightTweaker"
-    makeObfSourceJar = false
-}
 
 configurations {
     shade
     implementation.extendsFrom shade
 }
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+minecraft {
+    mappings channel: mcp_channel, version: mcp_version
+    runs {
+        client {
+            workingDirectory project.file("client")
+            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.console.level", "debug"
+            mods { examplemod { source sourceSets.main } }
+        }
+    }
+}
+
 repositories {
     mavenCentral()
-    mavenCentral()
-    maven { url 'https://www.jitpack.io' }
-    maven { url "https://www.dimdev.org/maven/" }
     maven { url "https://repo.spongepowered.org/maven/" }
 }
 
 dependencies {
-    shade("org.spongepowered:mixin:0.7.11-SNAPSHOT") { transitive = false }
-    implementation("net.minecraft:launchwrapper:1.12") { transitive = false }
-    runtime("org.spongepowered:mixin:0.7.11-SNAPSHOT") { transitive = false }
-    runtime("net.minecraft:launchwrapper:1.12") { transitive = false }
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    shade("org.spongepowered:mixin:0.8-SNAPSHOT") { transitive = false }
 }
 
 mixin {
-    defaultObfuscationEnv notch
     add sourceSets.main, "mixin.daflight.refmap.json"
 }
 
@@ -88,53 +91,3 @@ shadowJar {
 }
 
 build.dependsOn reobfShadowJar
-
-import net.minecraftforge.gradle.tasks.EtagDownloadTask
-
-task processJson(type: Copy) {
-    def things = [
-            version      : project.version,
-            project      : project.name,
-            timestamp    : new Date().format("yyyy'-'MM'-'dd'T'hh':'mm':'ssZZZZ"),
-            mcversion    : project.minecraft.version,
-            artifact     : "$project.group:$project.name:$version",
-            universal_jar: project.shadowJar.archivePath.name,
-            tweak_class  : project.minecraft.tweakClass
-    ]
-    from("install_profile.json") {
-        filter { line ->
-            def replaces = (line =~ /@(.+?)@/)
-            replaces.each {
-                line = line.replace(it[0], things[it[1]] ?: "null")
-            }
-            line
-        }
-    }
-    from(".") {
-        include "installer-logo.png"
-    }
-    into "build/distributions/packaging/resources"
-    outputs.upToDateWhen { false }
-}
-
-task downloadInstaller(type: EtagDownloadTask) {
-    url = "http://files.minecraftforge.net/maven/net/minecraftforge/installer/1.5/installer-1.5-shrunk.jar"
-    file = "build/distributions/packaging/installer-fresh.jar"
-    dieWithError = true
-}
-
-task installer(type: Zip) {
-    from shadowJar
-    from processJson
-    from(zipTree(downloadInstaller.file)) {
-        exclude "*.json"
-        exclude "*.png"
-    }
-    baseName = project.name
-    classifier = "installer"
-    extension = "jar"
-    destinationDir = file("build/distributions")
-    duplicatesStrategy = "EXCLUDE"
-    outputs.upToDateWhen { false }
-    dependsOn downloadInstaller, build, processJson
-}
