@@ -56,6 +56,7 @@ dependencies {
 }
 
 mixin {
+    defaultObfuscationEnv "notch"
     add sourceSets.main, "mixin.daflight.refmap.json"
 }
 
@@ -73,12 +74,20 @@ jar {
                     "Implementation-Vendor": "dags",
                     "Implementation-Title": project.name,
                     "Implementation-Version": project.version,
-                    "TweakName": project.name,
-                    "TweakVersion": project.version,
-                    "TweakAuthor": "dags",
-                    "TweakClass": "me.dags.daflight.launch.DaFlightLoaderTweaker"
+                    "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+                    "TweakOrder": 0,
+                    "MixinConfigs": "mixin.daflight.json"
             )
         }
+    }
+}
+
+processResources {
+    filesMatching("**/mods.toml") {
+        expand(
+                "version": mod_version,
+                "mc_version": mc_version
+        )
     }
 }
 

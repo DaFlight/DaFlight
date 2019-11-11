@@ -1,0 +1,8 @@
+modLoader="javafml"
+loaderVersion="[25,)"
+[[mods]]
+    modId="daflight"
+    displayName="DaFlight"
+    version="${version}"
+    authors="dags"
+    description="Fly mod"

@@ -13,9 +13,9 @@ import org.spongepowered.asm.mixin.Mixin;
  * @author dags <dags@dags.me>
  */
 @Mixin(ClientPlayerEntity.class)
-public class MixinEntityPlayerSP extends AbstractClientPlayerEntity {
+public class MixinClientPlayerEntity extends AbstractClientPlayerEntity {
 
-    public MixinEntityPlayerSP(ClientWorld world, GameProfile profile) {
+    public MixinClientPlayerEntity(ClientWorld world, GameProfile profile) {
         super(world, profile);
     }
 

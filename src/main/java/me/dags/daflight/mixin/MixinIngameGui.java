@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * @author dags <dags@dags.me>
  */
 @Mixin(IngameGui.class)
-public class MixinGuiIngame {
+public class MixinIngameGui {
 
     @Inject(method = "renderGameOverlay(F)V", at = @At("RETURN"))
     public void onRenderGameOverlay(float partialTicks, CallbackInfo callbackInfo) {
