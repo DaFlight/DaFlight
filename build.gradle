@@ -8,8 +8,7 @@ buildscript {
     }
     dependencies {
         classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
-//        classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT", changing: true
-        classpath group: "com.github.SpongePowered", name: "MixinGradle", version: "master-SNAPSHOT", changing: true
+        classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT", changing: true
         classpath group: "com.github.jengelman.gradle.plugins", name: "shadow", version: "4.0.2"
     }
 }
@@ -42,6 +41,12 @@ minecraft {
             property "forge.logging.console.level", "debug"
             mods { examplemod { source sourceSets.main } }
         }
+        server {
+            workingDirectory project.file("server")
+            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.console.level", "debug"
+            mods { examplemod { source sourceSets.main } }
+        }
     }
 }
 
@@ -52,11 +57,12 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-    shade("org.spongepowered:mixin:0.8-SNAPSHOT") { transitive = false }
+    shade ("org.spongepowered:mixin:0.8-SNAPSHOT") {
+        transitive false
+    }
 }
 
 mixin {
-    defaultObfuscationEnv "notch"
     add sourceSets.main, "mixin.daflight.refmap.json"
 }
 
@@ -74,9 +80,7 @@ jar {
                     "Implementation-Vendor": "dags",
                     "Implementation-Title": project.name,
                     "Implementation-Version": project.version,
-                    "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
-                    "TweakOrder": 0,
-                    "MixinConfigs": "mixin.daflight.json"
+                    "MixinConnector": "me.dags.daflight.Launch"
             )
         }
     }
