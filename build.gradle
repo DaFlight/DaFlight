@@ -4,16 +4,14 @@ buildscript {
         mavenCentral()
         maven { url "https://jitpack.io" }
         maven { url "http://repo.spongepowered.org/maven" }
-        maven { url 'https://files.minecraftforge.net/maven' }
+        maven { url "https://files.minecraftforge.net/maven" }
     }
     dependencies {
         classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
         classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT", changing: true
-        classpath group: "com.github.jengelman.gradle.plugins", name: "shadow", version: "4.0.2"
     }
 }
 
-apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "net.minecraftforge.gradle"
 apply plugin: "org.spongepowered.mixin"
 apply plugin: "java"
@@ -22,15 +20,6 @@ group = "me.dags"
 version = "${mod_version}-mc${mc_version}"
 archivesBaseName = "daflight"
 targetCompatibility = sourceCompatibility = 1.8
-
-configurations {
-    shade
-    implementation.extendsFrom shade
-}
-
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
 
 minecraft {
     mappings channel: mcp_channel, version: mcp_version
@@ -53,12 +42,14 @@ minecraft {
 repositories {
     mavenCentral()
     maven { url "https://repo.spongepowered.org/maven/" }
+    maven { url "https://files.minecraftforge.net/maven" }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-    shade ("org.spongepowered:mixin:0.8-SNAPSHOT") {
-        transitive false
+    compile ("org.spongepowered:mixin:0.8-SNAPSHOT") {
+        exclude module: "log4j-core"
+        exclude module: "log4j-api"
     }
 }
 
@@ -68,11 +59,9 @@ mixin {
 
 reobf {
     jar {}
-    shadowJar {}
 }
 
 jar {
-    classifier = "min"
     afterEvaluate {
         manifest {
             attributes(
@@ -94,13 +83,3 @@ processResources {
         )
     }
 }
-
-shadowJar {
-    dependsOn jar
-    classifier = ""
-    exclude "dummyThing", "LICENSE.txt"
-    mergeServiceFiles()
-    configurations = [project.configurations.shade]
-}
-
-build.dependsOn reobfShadowJar
